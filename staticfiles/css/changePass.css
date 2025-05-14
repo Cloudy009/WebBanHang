@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
+.center-content 
+{
+    font-family: "Arial, sans-serif";
+    text-align: center;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    margin: 0 auto;
+    padding: 20px;
+    width: 350px;
+}
+
+.context
+{
+    font-family: 'Lobster', cursive;
+}
+
+.center-content h1 {
+    color: #333;
+}
+
+.center-content form {
+    display: flex;
+    flex-direction: column;
+}
+
+.center-content label {
+    font-weight: bold;
+}
+
+.center-content input[type="password"] {
+    padding: 10px;
+    margin: 0;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.center-content .error {
+    color: red;
+}
+
+.center-content .btn {
+    display: inline-block;
+    padding: 10px 0; /* Đặt độ rộng tùy chỉnh cho giữa */
+    font-weight: bold;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    background: #007BFF; /* Màu nền cho nút */
+    width: 100px; /* Đặt chiều rộng 150px */
+    text-align: center; /* Căn giữa văn bản */
+    margin: 0 auto; /* Căn giữa theo chiều ngang */
+}
+
+.center-content .btn-update {
+    border-radius: 15px; /* Độ cong */
+}
+
+/* Khi di chuột qua nút */
+.center-content .btn:hover {
+    background: #0056b3;
+}
+
+/* Khi nhấn nút */
+.center-content .btn:active {
+    background: #004c9c;
+}

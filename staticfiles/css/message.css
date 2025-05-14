@@ -1,0 +1,124 @@
+@import url('https://fonts.googleapis.com/css2?family=Arizonia&family=Merriweather:ital,wght@0,700;1,400&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+.toasts
+{
+    position: fixed;
+    top: 10px;
+    right: 5px;
+    font-family: 'Poppins';
+    font-weight: 500;
+}
+
+.toast
+{   
+    height: 60px;
+    width: 350px;
+    color: white;
+    margin-bottom: 15px;
+    border-left: 5px solid #30bc1a;
+    border-radius: 5px;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    animation: slideShow 2s ease forwards;
+    padding: 20px;
+}
+
+.toasts .success
+{
+    background: rgb(107, 225, 115);
+}
+
+.toasts .warning
+{
+    background: rgba(253, 87, 87, 0.7);
+    border-left: 5px solid rgb(248, 83, 83);
+}
+
+.toasts .error
+{
+    background: rgba(249, 118, 53, 0.7);
+    border-left: 5px solid rgb(255, 98, 0);
+}
+
+.toast i
+{
+    font-size: 20px;
+    margin-right: 10px;
+}
+
+.cutdown
+{
+    position: absolute;
+    bottom: 0%;
+    left: 0%;
+    width: 100%;
+    height: 4px;
+    background: #30bc1a;
+    animation: cutdown 3s ease forwards;
+}
+
+.warning .cutdown
+{
+    background: red;
+}
+.error .cutdown
+{
+    background: rgb(250, 87, 0);
+}
+
+@keyframes cutdown
+{
+    0%
+    {
+        width: 100%;
+    }
+    100%
+    {
+        width: 0%;
+    }
+
+}
+
+@keyframes slideShow
+{
+    0%
+    {
+        transform: translateX(100%);
+    }
+    25%
+    {
+        transform: translateX(-10%);
+    }
+    50%
+    {
+        transform: translateX(0%);
+    }
+    100%
+    {
+        transform: translateX(-10px);
+    }
+}
+
+@keyframes slideHide
+{
+    0%
+    {
+        transform: translateX(0%);
+    }
+    25%
+    {
+        transform: translateX(-10%);
+    }
+    50%
+    {
+        transform: translateX(0%);
+    }
+    75%
+    {
+        transform: translateX(-10%);
+    }
+    100%
+    {
+        transform: translateX(200%);
+    }
+}
