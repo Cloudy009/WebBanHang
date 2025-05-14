@@ -1,0 +1,368 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+    margin: 0;
+}
+
+
+.chatbox-container{
+    position: fixed;
+    bottom: 0;
+    right: 10px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    /* background: linear-gradient(to bottom right, rgba(252, 203, 144, 1), rgba(213, 126, 235, 1)); */
+    background-color: #4c406d;
+    padding: 10px;
+    height: 100%;
+    width: 100%;
+    gap: 10px;
+    transition: all 0.5s ease-in-out;
+    border: #ffffff solid 2px;
+
+}
+
+.chatbox-container.smallbox {
+    width: 680px;
+    height: 400px;
+    z-index: 9999;
+}
+
+.chatbox-container.fullscreen {
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+}
+
+.header-container{
+    height: 10%; /* Chiều cao cố định cho phần header */
+    display: flex;
+    align-items: center; /* Canh giữa nội dung theo chiều dọc */
+    justify-content: space-between; /* Canh giữa nội dung theo chiều ngang */
+    color: white;
+    font-weight: bold;
+}
+
+.header-container > * {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.actions-container > button {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+
+.body-container{
+    flex: 1;         
+    display: flex;
+    justify-content: space-between;
+    height: 90%;  
+    width: 100%;
+}
+
+#sidebar {
+    border-right: 1px solid #ddd;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 30%;
+    max-width: 40%;
+    margin-right: 100px;
+}
+
+.room-list-container{
+    flex-direction: column;
+    gap: 30px;
+    height: 100%;
+}
+
+.list-container {
+    flex: 1;
+    overflow-y: auto;  /* Tự động thêm thanh cuộn nếu nội dung vượt quá chiều cao */
+    border: 2px solid #ccc; /* Tùy chọn: Thêm viền để làm nổi bật phần tử */
+    padding: 0px 5px 0px 0px; /* Tùy chọn: Thêm khoảng cách bên trong */
+}
+
+
+/* Thanh cuộn trong các trình duyệt WebKit (Chrome, Safari, Edge) */
+.list-container::-webkit-scrollbar {
+    width: 10px; /* Độ rộng của thanh cuộn dọc */
+}
+
+/* Nền của thanh cuộn */
+.list-container::-webkit-scrollbar-track {
+    background: #eddded; /* Màu nền của thanh cuộn */
+    border-radius: 10px;
+}
+
+/* Tay cầm của thanh cuộn */
+.list-container::-webkit-scrollbar-thumb {
+    background-color: #96388e; /* Màu của thanh cuộn */
+    border-radius: 5px; /* Góc bo tròn của thanh cuộn */
+}
+
+/* Khi người dùng di chuột lên thanh cuộn */ /* Đổi màu khi hover */
+/* .list-container::-webkit-scrollbar-thumb:hover {
+    background-color: #a5baac; 
+} */
+
+#chat-area {
+    flex: 1;
+    display: flex;
+    max-width: 60%;
+}
+
+.chat-area-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+}
+
+#room-title {
+    color: white;
+}
+#chat-log {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    overflow-y: scroll;
+    /* white-space: pre-wrap; */
+}
+
+.input-container{
+    display: flex;
+    border: 3px solid #47b7a49c;
+    background: white;
+    border-radius: 35px;
+    overflow: hidden;
+    padding: 10px;
+    gap: 2px;
+    flex: 1;
+}
+
+#chat-controls {
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+}
+#chat-message-input {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    outline: none;
+    font-size: 15px;
+    resize: none;
+    color: black !important;
+}
+
+
+.fileUploadWrapper{
+    margin-left: 10px;
+}
+
+.icon-container{
+    border: 2px solid #100909f7;
+    border-radius: 50%;
+    padding: 3px 5px;
+}
+#send-button {
+    padding: 10px 25px;
+    border: none;
+    background-color: #3ec8ba;
+    color: white;
+    cursor: pointer;
+    border-radius: 50%;
+    font-size: 20px;
+}
+#send-button:hover {
+    background-color: #2d8e83;
+    font-size: 25px;
+    padding: 10px 23px;
+}
+.message {
+    max-width: 60%;
+    margin: 5px 0;
+    padding: 10px 20px;
+    border-radius: 10px;
+    width:fit-content;
+    clear: both;
+    display: flex;
+    flex-direction: column;
+   
+}
+.message.sender {
+    background-color: #efab86;
+    margin-left: auto;
+    text-align: left;
+    color: white;
+}
+.message.receiver {
+    background-color: #4c406d;
+    margin-right: auto;
+    text-align: left;
+    color: white;
+}
+.message strong {
+    display: block;
+    font-weight: bold;
+}
+#room-list {
+    list-style: none;
+    padding: 10px;
+    background: rgba(24, 24, 16, .2);
+    border-radius: 2em;
+    backdrop-filter: blur(15px);
+    border: 2px solid rgba(255, 255, 255, 0.05);
+    background-clip: padding-box;
+    box-shadow: 10px 10px 10px rgba(46, 54, 68, 0.03);
+}
+
+#room-list li {
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255,255,255,.3);
+    border-radius: 10px;
+}
+
+.chatbox-container ul {
+    margin: 0;
+    background-color: #5c4e83;
+} 
+
+#room-list li:hover {
+    background-color: #d1d1d1;
+}
+
+.center-perfect{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.room-name{
+    display: flex;
+}
+.user-image-infor{
+    display: flex;
+    gap: 50px;
+    color: white;
+}
+
+.user-image{
+    width: 70%;
+    height: auto;
+    border-radius: 50%;
+}
+
+.user-name{
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.user-message{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1; /* Số dòng mà bạn muốn giới hạn */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Thêm dấu ba chấm nếu nội dung bị cắt */
+}
+/* Icon bật chatbox */
+#chatbox-toggle-icon {
+    position: fixed;
+    z-index: 10;
+    bottom: 90px;
+    right: 30px;
+    background-color: #007bff;
+    color: white;
+    padding: 15px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#chatbox-toggle-icon:hover {
+    background-color: #0056b3;
+}
+
+.chatbox-container.smallbox {
+    width: 600px;
+    height: 400px;
+    z-index: 9999;
+    margin: 0;
+    font-size: 10px;
+    border-radius: 20px;
+    
+}
+
+.chatbox-container.smallbox .logo-img{
+    height: 50px;
+}
+
+.chatbox-container.smallbox > .header-container{
+    height: 8%;
+    font-size: 15px;
+}
+
+.chatbox-container.smallbox #sidebar{
+    margin: 0;
+}
+
+.chatbox-container.smallbox .room-list-container{
+    gap: 20px;
+}
+
+.chatbox-container.smallbox .search_input{
+    height: auto;
+    line-height: normal;
+}
+
+.chatbox-container.smallbox #chat-area{
+    margin: 0;
+}
+
+.chatbox-container.smallbox #chat-log{
+    font-size: 15px;
+}
+
+.chatbox-container.smallbox .message{
+    max-width: 80%;
+}
+
+.chatbox-container.smallbox #chat-message-input{
+    padding: 0;
+}
+.chatbox-container.smallbox .fileUploadWrapper{
+    margin: 0;
+}
+.chatbox-container.smallbox .input-container{
+    gap: 5px;
+}
+
+.chatbox-container.smallbox #chat-controls{
+    padding: 0px;
+    gap: 5px;
+}
+
+.chatbox-container.smallbox #send-button{
+    padding: 10px 15px;
+    font-size: 15px;
+}

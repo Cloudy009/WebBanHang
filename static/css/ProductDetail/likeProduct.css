@@ -1,0 +1,37 @@
+/* Nút yêu thích */
+.wishlist-btn {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    background: none;
+    cursor: pointer;
+    outline: none;
+    border: 1px solid #141313;
+    border-radius: 50%;
+    padding: 12px;
+    background-color: rgb(255, 255, 255);
+    transition: background-color 1s ease, color 0.3s ease;
+}
+
+
+.wishlist-btn > i {
+    font-size: 20px;
+    color: #e62323;
+}
+
+.wishlist-btn:hover {
+    background-color: red; /* Màu nền chuyển sang đỏ khi nhấn */
+    outline: none; /* Loại bỏ viền focus mặc định */
+}
+  
+.wishlist-btn:hover i {
+    color: rgb(241, 242, 241); /* Màu icon chuyển sang xanh lá cây khi nhấn */
+}
+
+.wishlist-btn.liked > i {
+    color: rgb(241, 242, 241); /* Màu icon chuyển sang xanh lá cây khi nhấn */
+}
+
+.wishlist-btn.liked {
+    background-color: red; /* Màu nền chuyển sang đỏ khi nhấn */
+}

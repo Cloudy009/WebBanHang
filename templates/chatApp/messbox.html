@@ -1,0 +1,326 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/8f8e6e4c9f.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'css/ChatRoom/search_form.css' %}">
+    <link rel="stylesheet" href="{% static 'css/ChatRoom/search_form_custom.css' %}">
+    <link rel="stylesheet" href="{% static 'css/ChatRoom/chatbox.css' %}">
+
+    <title>Chat Room</title>
+</head>
+<body>
+    <div id="chatbox-toggle-icon">
+        <i class="fas fa-comments"></i>
+    </div>
+    <div class="chatbox-container smallbox" style="display: none;">
+        <div class="header-container">
+            <div class="logo-container">
+                <img src="{% static 'images/ChatRoom/icons8-chat-64.png' %}" class="logo-img" alt="ChatBox">
+                <p>ChatBox</p>
+            </div>
+            <div class="actions-container">
+                <button id="toggle-button" class="icon-toggle"><i class="fas fa-expand"></i></button>
+                <!-- Nút đóng chatbox -->
+                <button id="close-button" class="icon-close"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+        <div class="body-container">
+            <div id="sidebar">
+                <div class="room-list-container center-perfect ">
+                    <div class="search_group">
+                        <svg class="search_icon" aria-hidden="true" viewBox="0 0 24 24">
+                            <g>
+                                <path d="M21.53 20.47l-3.66-3.66C19.195 15.24 20 13.214 20 11c0-4.97-4.03-9-9-9s-9 4.03-9 9 4.03 9 9 9c2.215 0 4.24-.804 5.808-2.13l3.66 3.66c.147.146.34.22.53.22s.385-.073.53-.22c.295-.293.295-.767.002-1.06zM3.5 11c0-4.135 3.365-7.5 7.5-7.5s7.5 3.365 7.5 7.5-3.365 7.5-7.5 7.5-7.5-3.365-7.5-7.5z"></path>
+                            </g>
+                        </svg>
+                        <input placeholder="Search" type="search" class="search_input">
+                    </div>
+                    <div class="list-container">
+                        <ul id="room-list">
+                            <li class="room">
+                                <a href="#!" class="user-image-infor">
+                                    <div class="room-name">
+                                        <div class="user-image-container center-perfect">
+                                            <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-8.webp" alt="avatar" class="user-image">
+                                        </div>
+                                        <div class="user-infor">
+                                            <p class="user-name">chivy</p>
+                                            <p class="user-message">Hello, Are you there?</p>
+                                        </div>
+                                    </div>
+                                    <div class="time-message">
+                                        <p class="time">Just now</p>
+                                        <span class="badge" style="background-color: transparent;">0</span>
+                                    </div>
+                                </a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div id="chat-area">
+                <div class="chat-area-container">
+                    <h1 id="room-title">Select a room</h1>
+                    <div id="chat-log">
+                    
+                    </div>
+                    <div id="chat-controls">
+                        <div class="input-container">
+                            <div class="fileUploadWrapper center-perfect">
+                                <span class="icon-container">
+                                    <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                                </span>
+                            </div>
+                            <textarea id="chat-message-input" placeholder="Type your message here..." autocomplete="off" rows="1" maxlength="500"></textarea>
+
+                        </div>
+                        <button id="send-button">
+                            <i class="fa-solid fa-paper-plane icon-send" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let chatSocket = null;
+        let currentRoomId = null;
+        let loadingOldMessages = false;
+        let oldestMessageTimestamp = null;
+
+        function setupChatSocket(roomName) {
+            chatSocket = new WebSocket(
+                'ws://' + window.location.host + '/ws/chat/' + roomName + '/'
+            );
+
+            chatSocket.onmessage = function(e) 
+            {
+                const data = JSON.parse(e.data);
+                const chatLog = document.querySelector('#chat-log');
+
+                if (data.type === 'chat_message') 
+                {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.classList.add('message');
+                    messageDiv.classList.add(data.user === '{{ user.username }}' ? 'sender' : 'receiver');
+                    messageDiv.innerHTML = `<strong>${data.user}:</strong> ${data.message}`;
+                    chatLog.appendChild(messageDiv);
+                    chatLog.scrollTop = chatLog.scrollHeight;
+                    oldestMessageTimestamp = data.timestamp;
+
+                } 
+                else if (data.type === 'old_messages') 
+                {
+                    const messages = data.messages;
+                    messages.forEach(msg => 
+                    {
+                        const messageDiv = document.createElement('div');
+                        messageDiv.classList.add('message');
+                        messageDiv.classList.add(msg.user === '{{ user.username }}' ? 'sender' : 'receiver');
+                        messageDiv.innerHTML = `<strong>${msg.user}:</strong> ${msg.content}`;
+                        chatLog.insertBefore(messageDiv, chatLog.firstChild);
+                    });
+
+                    if (messages.length > 0) 
+                    {
+                        oldestMessageTimestamp = messages[messages.length - 1].timestamp;
+                    }
+                    loadingOldMessages = false;
+                }
+            };
+
+            chatSocket.onclose = function(e) {
+                console.error('Chat socket closed unexpectedly');
+            };
+
+            chatSocket.onerror = function(e) {
+                console.error('Chat socket encountered an error:', e);
+            };
+
+            document.querySelector('#chat-message-input').onkeyup = function(e) {
+                if (e.keyCode === 13) {
+                    sendMessage();
+                }
+            };
+
+            document.querySelector('#send-button').onclick = function() {
+                sendMessage();
+            };
+
+            document.querySelector('#chat-log').onscroll = function() 
+            {
+                if (this.scrollTop === 0 && !loadingOldMessages) 
+                {
+                    loadingOldMessages = true;
+                    chatSocket.send
+                    ( 
+                        JSON.stringify
+                        ({
+                            'action': 'load_old_messages',
+                            'oldest_message_timestamp': oldestMessageTimestamp
+                        })
+                    );
+                }
+            };
+        }
+
+        function sendMessage() 
+        {
+            const messageInputDom = document.querySelector('#chat-message-input');
+            const message = messageInputDom.value;
+            if (message.trim()) 
+            {
+                chatSocket.send
+                (
+                    JSON.stringify
+                    ({
+                    
+                        'message': message
+                
+                    })
+                );
+                messageInputDom.value = '';
+            }
+        }
+
+        function loadRooms() {
+    fetch('/chat/rooms/')
+        .then(response => response.json())
+        .then(data => {
+            const roomList = document.querySelector('#room-list');
+            roomList.innerHTML = ''; // Clear existing rooms
+
+            // Sort rooms by the latest message timestamp
+            data.rooms.sort((a, b) => {
+                const aTime = new Date(a.lastMessageTimestamp).getTime();
+                const bTime = new Date(b.lastMessageTimestamp).getTime();
+                return bTime - aTime;
+            });
+
+            data.rooms.forEach(room => {
+                // Create li element
+                const li = document.createElement('li');
+                li.className = 'room';
+
+                // Create a element
+                const a = document.createElement('a');
+                a.href = '#!';
+                a.className = 'user-image-infor';
+
+                // Create div containing image and user information
+                const divRow = document.createElement('div');
+                divRow.className = 'room-name';
+
+                const imgContainer = document.createElement('div');
+                imgContainer.className = 'user-image-container center-perfect';
+
+                const img = document.createElement('img');
+                img.src = room.avatar || 'https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-8.webp';
+                img.alt = 'avatar';
+                img.className = 'user-image';
+
+                imgContainer.appendChild(img);
+
+                const divText = document.createElement('div');
+                divText.className = 'user-infor';
+
+                const pName = document.createElement('p');
+                pName.className = 'user-name';
+                pName.textContent = room.name || 'John Doe';
+
+                const pMessage = document.createElement('p');
+                pMessage.className = 'user-message';
+                pMessage.textContent = room.lastMessage || 'Hello, Are you there?';
+
+                divText.appendChild(pName);
+                divText.appendChild(pMessage);
+
+                divRow.appendChild(imgContainer);
+                divRow.appendChild(divText);
+
+                // Create div containing time and unread message count
+                const divTime = document.createElement('div');
+                divTime.className = 'time-message';
+
+                const pTime = document.createElement('p');
+                pTime.className = 'time';
+                pTime.textContent = room.lastActive || 'Just now';
+
+                const badge = document.createElement('span');
+                badge.className = 'badge';
+                badge.textContent = room.unreadCount || '0';
+                badge.style.backgroundColor = room.unreadCount > 0 ? 'red' : 'transparent'; // Highlight if unreadCount > 0
+
+                divTime.appendChild(pTime);
+                divTime.appendChild(badge);
+
+                // Append elements
+                a.appendChild(divRow);
+                a.appendChild(divTime);
+                li.appendChild(a);
+                roomList.appendChild(li);
+
+                // Add click event for li
+                li.addEventListener('click', function() {
+                    if (chatSocket) {
+                        chatSocket.close();
+                    }
+                    currentRoomId = room.name;
+                    document.querySelector('#room-title').textContent = room.name;
+                    document.querySelector('#chat-log').innerHTML = '';
+                    setupChatSocket(room.name);
+
+                    // Clear unread count
+                    badge.textContent = '0';
+                    badge.style.backgroundColor = 'transparent';
+                    fetch(`/chat/rooms/${room.name}/mark_as_read/`, { method: 'POST' });
+                });
+            });
+        })
+        .catch(error => console.error('Error loading rooms:', error));
+}
+
+
+        window.onload = function() {
+            loadRooms();
+        };
+    </script>
+    <script>
+        const chatbox = document.querySelector('.chatbox-container');
+        const toggleButton = document.getElementById('toggle-button');
+        const closeButton = document.getElementById('close-button');
+        const chatboxToggleIcon = document.getElementById('chatbox-toggle-icon');
+
+        // Phóng to/thu nhỏ chatbox
+        toggleButton.addEventListener('click', () => {
+            if (chatbox.classList.contains('smallbox')) {
+                chatbox.classList.remove('smallbox');
+                chatbox.classList.add('fullscreen');
+                toggleButton.innerHTML = '<i class="fas fa-compress"></i>';
+            } else {
+                chatbox.classList.remove('fullscreen');
+                chatbox.classList.add('smallbox');
+                toggleButton.innerHTML = '<i class="fas fa-expand"></i>';
+            }
+        });
+
+        // Tắt (đóng) chatbox
+        closeButton.addEventListener('click', () => {
+            chatbox.style.display = 'none'; // Ẩn chatbox
+            chatboxToggleIcon.style.display = 'flex'; // Hiển thị lại icon chatbox để bật
+        });
+
+        // Bật chatbox khi nhấn vào icon
+        chatboxToggleIcon.addEventListener('click', () => {
+            chatbox.style.display = 'flex'; // Hiển thị chatbox
+            chatboxToggleIcon.style.display = 'none'; // Ẩn icon chatbox
+        });
+    </script>
+
+</body>
+</html>

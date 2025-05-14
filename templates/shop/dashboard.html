@@ -1,0 +1,1228 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href="https://unpkg.com/@webpixels/css@1.2.6/dist/index.css" rel="stylesheet">
+  <link href="{% static 'css/Dashboard/style.css' %}" rel="stylesheet" />
+  <script src="https://kit.fontawesome.com/8f8e6e4c9f.js" crossorigin="anonymous"></script>
+  <link rel= "stylesheet" href= "https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css" >
+  <link href="{% static 'css/Dashboard/shipping.css' %}" rel="stylesheet" />
+  <link href="{% static 'css/Dashboard/customer_dashboard.css' %}" rel="stylesheet" />
+  <style>
+    .reviews-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px; /* Khoảng cách giữa các sản phẩm */
+        justify-content: space-between; /* Căn đều các sản phẩm */
+    }
+  
+    .product-info {
+        width: calc(33.333% - 20px); /* Đảm bảo 3 sản phẩm mỗi hàng */
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 15px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+  
+    .product-info img {
+        display: block;
+        margin: 0 auto 10px; /* Căn giữa ảnh sản phẩm */
+    }
+  
+    .product-info h1 {
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+  
+    .product-info table {
+        margin-bottom: 15px;
+    }
+  
+    .text-center {
+        margin-top: 10px;
+    }
+  </style>
+  
+</head>
+<body>
+  {% if messages  %}
+        {% include "partion/message.html" %}
+  {% endif %}
+  <div class="d-flex flex-column flex-lg-row h-lg-full bg-surface-secondary">
+    <!-- Vertical Navbar -->
+    <nav class="navbar show navbar-vertical h-lg-screen navbar-expand-lg px-0 py-3 py-lg-0 navbar-light bg-light border-bottom border-bottom-lg-0 border-end-lg" id="navbarVertical">
+      <div class="container-fluid">
+        <!-- Toggler -->
+        <button class="navbar-toggler ms-n2" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarCollapse" aria-controls="sidebarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <!-- Brand -->
+        <a class="navbar-brand py-lg-5 mb-lg-5 px-lg-6 me-0" href="{% url 'homePage' %}">
+          <img src="/static/images/logo2.png" alt="logo" class="img-fluid">
+        </a>
+        <!-- User menu (mobile) -->
+        <div class="navbar-user d-lg-none">
+          <!-- Dropdown -->
+          <div class="dropdown">
+            <!-- Toggle -->
+            <a href="#" id="sidebarAvatar" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <div class="avatar-parent-child">
+                <img alt="Image Placeholder" src="https://images.unsplash.com/photo-1548142813-c348350df52b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=256&h=256&q=80" class="avatar avatar- rounded-circle">
+                <span class="avatar-child avatar-badge bg-success"></span>
+              </div>
+            </a>
+            <!-- Menu -->
+            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="sidebarAvatar">
+              <a href="#" class="dropdown-item">Profile</a>
+              <a href="#" class="dropdown-item">Settings</a>
+              <a href="#" class="dropdown-item">Billing</a>
+              <hr class="dropdown-divider">
+              <a href="#" class="dropdown-item">Logout</a>
+            </div>
+          </div>
+        </div>
+        <!-- Collapse -->
+        <div class="collapse navbar-collapse" id="sidebarCollapse">
+          <!-- Form -->
+          <form class="mt-4 mb-3 d-none">
+            <div x-data="{focused: false}" :class="{ 'focused': focused }">
+              <div class="input-group input-group-sm">
+                <span class="input-group-text border-end-0 rounded-left-pill" id="basic-addon1">
+                  <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-search" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z" />
+                    <path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z" />
+                  </svg>
+                </span>
+                <input type="text" class="form-control border-left-0 ps-0 rounded-end-pill" placeholder="Search" aria-label="Username" aria-describedby="basic-addon1" @focus="focused = !focused" @click.away="focused = false">
+              </div>
+            </div>
+          </form>
+          <!-- Navigation -->
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="#" onclick="showContent('Dashboard')">
+                <i class="bi bi-house"></i> Dashboard
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" onclick="showContent('Shippings')">
+                <i class="bi bi-bar-chart"></i> Shippings
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">
+                <i class="bi bi-chat"></i> Messages
+                <span class="badge bg-opacity-30 bg-primary text-primary rounded-pill d-inline-flex align-items-center ms-auto">6</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" onclick="showContent('Orders')">
+                <i class="bi bi-bookmarks"></i> Orders
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="userLink" href="#" onclick="showContent('Users')">
+                <i class="bi bi-people"></i> Users
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" onclick="showContent('Reviews')">
+                <i class="bi bi-people"></i> Reviews
+              </a>
+            </li>
+          </ul>
+          <!-- Divider -->
+          <hr class="navbar-divider my-5 opacity-20">
+          <!-- Navigation -->
+          <ul class="navbar-nav mb-md-4">
+            <li>
+              <span class="nav-link text-xs font-semibold text-uppercase text-muted ls-wide" href="#">
+                Teams
+              </span>
+            </li>
+            <li class="">
+              <a class="nav-link text-sm font-semibold" href="#">
+                <span class="w-2 h-2 rounded-circle me-3 bg-primary"></span>Marketing
+              </a>
+            </li>
+            <li class="">
+              <a class="nav-link text-sm font-semibold" href="#">
+                <span class="w-2 h-2 rounded-circle me-3 bg-warning"></span>Development
+              </a>
+            </li>
+            <li class="">
+              <a class="nav-link text-sm font-semibold" href="#">
+                <span class="w-2 h-2 rounded-circle me-3 bg-success"></span>Design
+              </a>
+            </li>
+            <li class="">
+              <a class="nav-link text-sm font-semibold" href="#">
+                <span class="w-2 h-2 rounded-circle me-3 bg-tertiary"></span>Social Media
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    
+    <!-- Main content -->
+    <div id="Users" class="main_contain" style="display: block;">
+      <div class="h-screen flex-grow-1 overflow-y-lg-auto">
+        <!-- Header -->
+        <header class="bg-surface-primary border-bottom pt-6">
+          <div class="container-fluid">
+            <div class="mb-npx">
+              <div class="row align-items-center">
+                <div class="col-sm-6 col-12 mb-4 mb-sm-0">
+                  <!-- Title -->
+                  <h1 class="h2 mb-0 ls-tight">Account Settings</h1>
+                </div>
+                <!-- Actions -->
+                <div class="col-sm-6 col-12 text-sm-end">
+                  <div class="mx-n1">
+                    <a href="#" class="btn d-inline-flex btn-sm btn-neutral mx-1">
+                      <span class=" pe-2">
+                        <i class="bi bi-pencil"></i>
+                      </span>
+                      <span>Edit</span>
+                    </a>
+                    <a href="#" class="btn d-inline-flex btn-sm btn-primary mx-1">
+                      <span class=" pe-2">
+                        <i class="bi bi-plus"></i>
+                      </span>
+                      <span>Create</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <ul class="nav nav-tabs mt-4 overflow-x border-0">
+                <li class="nav-item ">
+                  <a href="#" class="nav-link active"  onclick="showContentUser('user_info')">User Information</a>
+                </li>
+                <li class="nav-item">
+                  <a href="#" class="nav-link font-regular" onclick="showContentUser('account_info')">Account</a>
+                </li>
+                <li class="nav-item">
+                  <a href="#" class="nav-link font-regular"></a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </header>
+        <!-- Main -->
+        <div id="user_info" class="content-section" style="display: block;">
+
+          <main class="py-6 bg-surface-secondary">
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-xl-7 mx-auto">
+                  <!-- Profile picture -->
+                  <div class="card shadow border-0 mt-4 mb-10">
+                    <div class="card-body">
+                      <div class="d-flex align-items-center">
+                        <div>
+                          <div class="d-flex align-items-center">
+                            <a href="#" class="avatar avatar-lg bg-warning rounded-circle text-white">
+                              <img alt="..." src="https://images.unsplash.com/photo-1579463148228-138296ac3b98?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=256&h=256&q=80">
+                            </a>
+                            <div class="ms-4">
+                              <span class="h4 d-block mb-0">Julianne Moore</span>
+                              <a href="#" class="text-sm font-semibold text-muted">View Profile</a>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="ms-auto">
+                          <button type="button" class="btn btn-sm btn-neutral">Upload</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Form -->
+                  <div class="mb-5">
+                    <h5 class="mb-0">Contact Information</h5>
+                  </div>
+                  <form class="mb-6" method="POST" action="{% url 'update_contact_info' %}">
+                    {% csrf_token %}
+                    
+                    <!-- First Name and Last Name -->
+                    <div class="row mb-5">
+                      <div class="col-md-6">
+                        <label class="form-label" for="first_name">First Name</label>
+                        <input type="text" class="form-control" id="first_name" name="first_name" 
+                              value="{{ user_profile.first_name|default_if_none:'' }}" placeholder="Enter your first name">
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label" for="last_name">Last Name</label>
+                        <input type="text" class="form-control" id="last_name" name="last_name" 
+                              value="{{ user_profile.last_name|default_if_none:'' }}" placeholder="Enter your last name">
+                      </div>
+                    </div>
+                  
+                    <!-- Email -->
+                    <div class="row mb-5">
+                      <div class="col-md-6">
+                        <label class="form-label" for="email">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" 
+                              value="{{ user_profile.email|default_if_none:'' }}" placeholder="Enter your email">
+                      </div>
+                  
+                    <!-- Phone Number -->
+                      <div class="col-md-6">
+                        <label class="form-label" for="phone_number">Phone Number</label>
+                        <input type="tel" class="form-control" id="phone_number" name="phone_number" 
+                              value="{{ user_profile.phone_number|default_if_none:'' }}" placeholder="Enter your phone number">
+                      </div>
+                    </div>
+                  
+                    <!-- Address -->
+                    <div class="row mb-5">
+                      <div class="col-md-12">
+                        <label class="form-label" for="address">Address</label>
+                        <input type="text" class="form-control" id="address" name="address" 
+                              value="{{ user_profile.address|default_if_none:'' }}" placeholder="Enter your address">
+                      </div>
+                    </div>
+                  
+                    <!-- City and ZIP Code -->
+                    <div class="row mb-5">
+                      <div class="col-md-6">
+                        <label class="form-label" for="city">City</label>
+                        <input type="text" class="form-control" id="city" name="city" 
+                              value="{{ user_profile.city|default_if_none:'' }}" placeholder="Enter your city">
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label" for="zip">ZIP Code</label>
+                        <input type="text" class="form-control" id="zip" name="zip" 
+                              value="{{ user_profile.zip|default_if_none:'' }}" placeholder="Enter your ZIP code">
+                      </div>
+                    </div>
+                  
+                    <!-- Date of Birth -->
+                    <div class="row mb-5">
+                      <div class="col-md-6">
+                        <label class="form-label" for="date_of_birth">Date of Birth</label>
+                        <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" 
+                              value="{{ user_profile.date_of_birth|default_if_none:'' }}">
+                      </div>
+                    </div>
+                  
+                    <!-- Country (Dropdown + Manual Input Option) -->
+                    <div class="row mb-5">
+                      <div class="col-md-6">
+                        <label class="form-label" for="country">Country</label>
+                        <select class="form-select" id="country_select" name="country_select" onchange="toggleCountryInput(this.value)">
+                          <option value="" {% if not user_profile.country %}selected{% endif %}>Chọn quốc gia</option>
+                          <option value="USA" {% if user_profile.country == 'USA' %}selected{% endif %}>USA</option>
+                          <option value="Canada" {% if user_profile.country == 'Canada' %}selected{% endif %}>Canada</option>
+                          <option value="UK" {% if user_profile.country == 'UK' %}selected{% endif %}>UK</option>
+                          <option value="Other">Khác (Nhập thủ công)</option>
+                        </select>
+                        
+                        <input type="text" class="form-control mt-2" id="country_input" name="country_input" 
+                              value="{% if is_custom_country %}{{ user_profile.country }}{% endif %}" 
+                              placeholder="Nhập quốc gia của bạn" style="display: none;">
+                      </div>
+                    </div>
+                  
+                    <!-- Checkbox for Primary Address -->
+                    <div class="row mb-5">
+                      <div class="col-md-12">
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" name="check_primary_address" id="check_primary_address" 
+                                {% if user_profile.is_primary %}checked{% endif %}>
+                          <label class="form-check-label" for="check_primary_address">
+                            Make this my default address
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  
+                    <!-- Save Button -->
+                    <div class="text-end">
+                      <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                    </div>
+                  </form>
+                  
+                  <hr class="my-10" />
+                  <!-- Individual switch cards -->
+                  <div class="row g-6">
+                    <div class="col-md-6">
+                      <div class="card shadow border-0">
+                        <div class="card-body">
+                          <h5 class="mb-2">Public profile</h5>
+                          <p class="text-sm text-muted mb-6">
+                            Making your profile public means that anyone on the network will be able to find you.
+                          </p>
+                          <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" checked>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="card shadow border-0">
+                        <div class="card-body">
+                          <h5 class="mb-2">Show my email</h5>
+                          <p class="text-sm text-muted mb-6">
+                            Showing your e-mail adresses means that anyone on the network will be able to find you.
+                          </p>
+                          <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="card shadow border-0">
+                        <div class="card-body d-flex align-items-center">
+                          <div>
+                            <h5 class="text-danger mb-2">Deactivate account</h5>
+                            <p class="text-sm text-muted">
+                              Once you delete your account, there is no going back. Please be certain.
+                            </p>
+                          </div>
+                          <div class="ms-auto">
+                            <button type="button" class="btn btn-sm btn-danger">Deactivate</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </main>
+        </div>
+        <!-- Account Information Section -->
+        <div id="account_info" class="content-section" style="display: none;">
+          <main class="py-6 bg-surface-secondary">
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-xl-7 mx-auto">
+                  <div class="card shadow border-0 mt-4 mb-10">
+                    <div class="card-body">
+                      <div class="d-flex align-items-center">
+                        <div>
+                          <div class="d-flex align-items-center">
+                            <a href="#" class="avatar avatar-lg bg-warning rounded-circle text-white">
+                              <img alt="..." src="https://images.unsplash.com/photo-1579463148228-138296ac3b98?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=256&h=256&q=80">
+                            </a>
+                            <div class="ms-4">
+                              <span class="h4 d-block mb-0">Julianne Moore</span>
+                              <a href="#" class="text-sm font-semibold text-muted">View Profile</a>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="ms-auto">
+                          <button type="button" class="btn btn-sm btn-neutral">Upload</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mb-5">
+                    <h5 class="mb-0">Account Information</h5>
+                  </div>
+                  <div class="row mb-5">
+                    <div class="col-md-6">
+                      <label class="form-label">Email</label>
+                      <p class="form-control-plaintext">{{ user.email|default_if_none:'N/A' }}</p>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Username</label>
+                      <p class="form-control-plaintext">{{ user.username|default_if_none:'N/A' }}</p>
+                    </div>
+                  </div>
+                  
+                  <form class="mb-6" method="POST" action="">
+                    {% csrf_token %}
+                  
+                  
+                  
+                    <!-- Change Password (if user is authenticated) -->
+                    {% if user.is_authenticated %}
+                      <div class="mb-5">
+                        <h5>Change Password</h5>
+                  
+                        <label for="{{ form.old_password.id_for_label }}">{{ form.old_password.label_tag }}</label>
+                        <input type="password" class="form-control" id="{{ form.old_password.id_for_label }}" name="{{ form.old_password.name }}">
+                        <p class="error">{{ form.old_password.errors }}</p>
+                  
+                        <label for="{{ form.new_password1.id_for_label }}">{{ form.new_password1.label_tag }}</label>
+                        <input type="password" class="form-control" id="{{ form.new_password1.id_for_label }}" name="{{ form.new_password1.name }}">
+                        <p class="error">{{ form.new_password1.errors }}</p>
+                  
+                        <label for="{{ form.new_password2.id_for_label }}">{{ form.new_password2.label_tag }}</label>
+                        <input type="password" class="form-control" id="{{ form.new_password2.id_for_label }}" name="{{ form.new_password2.name }}">
+                        <p class="error">{{ form.new_password2.errors }}</p>
+                      </div>
+                    {% endif %}
+                  
+                    <!-- Save Button -->
+                    <div class="text-end">
+                      <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                    </div>
+                  </form>
+                  
+                  <hr class="my-10" />
+                  <!-- Individual switch cards -->
+                  <div class="row g-6">
+                    <div class="col-md-6">
+                      <div class="card shadow border-0">
+                        <div class="card-body">
+                          <h5 class="mb-2">Public profile</h5>
+                          <p class="text-sm text-muted mb-6">
+                            Making your profile public means that anyone on the network will be able to find you.
+                          </p>
+                          <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" checked>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="card shadow border-0">
+                        <div class="card-body">
+                          <h5 class="mb-2">Show my email</h5>
+                          <p class="text-sm text-muted mb-6">
+                            Showing your e-mail adresses means that anyone on the network will be able to find you.
+                          </p>
+                          <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="card shadow border-0">
+                        <div class="card-body d-flex align-items-center">
+                          <div>
+                            <h5 class="text-danger mb-2">Deactivate account</h5>
+                            <p class="text-sm text-muted">
+                              Once you delete your account, there is no going back. Please be certain.
+                            </p>
+                          </div>
+                          <div class="ms-auto">
+                            <button type="button" class="btn btn-sm btn-danger">Deactivate</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+    
+    <div id="Orders" class="main_contain" style="display:none;">
+      <div class="h-screen flex-grow-1 overflow-y-lg-auto">
+        <!-- Header -->
+        <header class="bg-surface-primary border-bottom pt-6">
+          <div class="container-fluid">
+            <div class="mb-npx">
+              <div class="row align-items-center">
+                <div class="col-sm-6 col-12 mb-4 mb-sm-0">
+                  <!-- Title -->
+                  <h1 class="h2 mb-0 ls-tight">Account Settings</h1>
+                </div>
+                <!-- Actions -->
+                <div class="col-sm-6 col-12 text-sm-end">
+                  <div class="mx-n1">
+                    <a href="#" class="btn d-inline-flex btn-sm btn-neutral mx-1">
+                      <span class=" pe-2">
+                        <i class="bi bi-pencil"></i>
+                      </span>
+                      <span>Edit</span>
+                    </a>
+                    <a href="#" class="btn d-inline-flex btn-sm btn-primary mx-1">
+                      <span class=" pe-2">
+                        <i class="bi bi-plus"></i>
+                      </span>
+                      <span>Create</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <ul class="nav nav-tabs mt-4 overflow-x border-0">
+                <li class="nav-item ">
+                  <a href="#" class="nav-link active">All files</a>
+                </li>
+                <li class="nav-item">
+                  <a href="#" class="nav-link font-regular">Shared</a>
+                </li>
+                <li class="nav-item">
+                  <a href="#" class="nav-link font-regular">File requests</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </header>
+        <!-- Main -->
+        <main class="py-6 bg-surface-secondary">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-xl-12 mx-auto">
+                <!-- Orders Table -->
+                <div class="card shadow border-0 mt-2 mb-10">
+                  <div class="card-body">
+                    <table class="table table-hover table-responsive">
+                      <thead>
+                        <tr>
+                          <th scope="col">ID Order</th>
+                          <th scope="col">Total Products</th>
+                          <th scope="col">Order Date</th>
+                          <th scope="col">Loại Thanh toán</th>
+                          <th scope="col">Total Amount</th>
+                          <th scope="col">Shipping Status</th>
+                          <th scope="col">Payment status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for item in hoaDons %}
+                        <tr>
+                          <td>{{item.maHoaDon}}</td>
+                          <td>{{item.total_products }}</td>
+                          <td>{{item.created_at}}</td>
+                          <td>{{ item.get_payment_method_display }}</td>
+                          <td>{{item.tongTien}}</td>
+                          
+                          <td>
+                            {% if item.status %}
+                                <span class="badge bg-success">Completed</span>
+                            {% else %}
+                                <span class="badge bg-warning">Pending</span>
+                            {% endif %}
+                        </td>
+                          <td><span class="badge bg-success">Completed</span></td>
+                        </tr>
+                        {% endfor %}
+                        
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    
+    <div id="Dashboard" class="main_contain" style="display:none;">
+      <div class="h-screen flex-grow-1 overflow-y-lg-auto">
+        <!-- Header -->
+        <header class="bg-surface-primary border-bottom pt-6">
+          <div class="container-fluid">
+            <div class="mb-npx">
+              <div class="row align-items-center">
+               
+              </div>
+              
+            </div>
+          </div>
+        </header>
+        <!-- Main -->
+        <main class="py-3 bg-surface-secondary">
+          <div class="container-fluid">
+            <div class="row d-flex flex-column gap-10 ">
+              
+              <div class="welcome-user-level d-flex gap-4 h-25 position-relative">
+                <div class="content-welcome-container d-flex flex-column gap-4">
+                  <div class="card shadow border-0">
+                    <div class="card-body d-flex justify-content-between align-items-center position-relative p-0">
+                      <div class="content-welcome d-flex  justify-content-between align-items-center">
+                        <div class="welcome-image" style="max-width: 150px; height: auto; object-fit: cover;">
+                          <img src="{% static 'images/Dashboard/toi.png' %}" alt="">
+                        </div>
+                        <div class="welcome-text">
+                          <h3>WELCOME BACK, CUSTOMER</h3>
+                          <h5>Good Evening</h5>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="d-flex flex-column gap-1">
+                    <!-- Account Summary -->
+                      <h4>Overview</h4>
+                    <div class="overview-content d-flex gap-2">
+                      <!-- <div class="card card-design">
+                        <div class="card-body position-relative d-flex justify-content-between align-items-center gap-3">
+                          <div class="card-icon bg-warning">
+                            <i class="fas fa-user fa-lg text-primary"></i>
+                          </div>
+                          <div class="card-content d-flex flex-column">
+                            <h5>CUSTOMER</h5>
+                            <p>VIP</p> 
+                          </div>
+                        </div>
+                      </div> -->
+                      <div class="card card-design">
+                        <div class="card-body position-relative d-flex justify-content-between align-items-center gap-3">
+                          <div class="card-icon bg-warning">
+                            <i class="fa-solid fa-pen-to-square"></i> <!-- Thay thế bằng biểu tượng phù hợp -->
+                          </div>
+                          <div class="card-content d-flex flex-column gap-1">
+                            <h5>ORDERS</h5>
+                            <p>{{ total_invoices }}</p> <!-- Thay thế với dữ liệu thực tế -->
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card card-design">
+                        <div class="card-body position-relative d-flex justify-content-between align-items-center gap-5">
+                          <div class="card-icon bg-warning">
+                            <i class="fa-solid fa-money-bill"></i> <!-- Thay thế bằng biểu tượng phù hợp -->
+                          </div>
+                          <div class="card-content d-flex flex-column gap-1">
+                            <h5>AMOUNTS</h5>
+                            <p>{{ total_spent }} VND</p> <!-- Thay thế với dữ liệu thực tế -->
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card card-design">
+                        <div class="card-body position-relative d-flex justify-content-between align-items-center gap-5">
+                          <div class="card-icon bg-warning">
+                            <i class="fa-solid fa-ticket"></i> <!-- Thay thế bằng biểu tượng phù hợp -->
+                          </div>
+                          <div class="card-content">
+                            <h5>BONUS</h5>
+                            <p>{{ total_discount }} VND</p> <!-- Thay thế với dữ liệu thực tế -->
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="user-level-container">
+                    <div class="card shadow border-0">
+                      <div class="card-body d-flex justify-content-between align-items-center p-0">
+                        <div class="level-image-container" style="width: auto; height: auto; object-fit: cover;">
+                          <img src="{% static 'images/Dashboard/welcome.png' %}" alt="">
+                        </div>
+                        <div class="content-level d-flex flex-column gap-4">
+                          <h3>LEVEL</h3>
+                          <span>VIP</span>
+                        </div>
+                      </div>
+                    </div>               
+                  
+                </div>
+              </div>
+              <div class="col-xl-12 d-flex mx-auto gap-4">
+                <div class="history-table-container d-flex flex-column gap-4">
+                  <div class="orders-container">
+                    <h4>Recent Orders</h4>
+                    <div class="card shadow border-0 mt-4">
+                      <!-- Recent Orders Container -->
+                      <div class="card-body">
+                        <table class="recently-orders-table table table-hover table-responsive">
+                          <thead>
+                            <tr>
+                              <th>Mã Đơn Hàng</th>
+                              <th>Ngày Mua</th>
+                              <th>Tổng Tiền</th>
+                              <th>Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>#12345</td>
+                              <td>01/09/2024</td>
+                              <td>500,000 VND</td>
+                              <td><span class="badge bg-success">Chi tiết</span></td>
+                            </tr>
+                            <tr>
+                              <td>#12344</td>
+                              <td>30/08/2024</td>
+                              <td>250,000 VND</td>
+                              <td><span class="badge bg-success">Chi tiết</span></td>
+                            </tr>
+                            <tr>
+                              <td>#12343</td>
+                              <td>28/08/2024</td>
+                              <td>1,200,000 VND</td>
+                              <td><span class="badge bg-success">Chi tiết</span></td>
+                            </tr>
+                            <tr>
+                              <td>#12342</td>
+                              <td>26/08/2024</td>
+                              <td>750,000 VND</td>
+                              <td><span class="badge bg-success">Chi tiết</span></td>
+                            </tr>
+                            <tr>
+                              <td>#12341</td>
+                              <td>25/08/2024</td>
+                              <td>320,000 VND</td>
+                              <td><span class="badge bg-success">Chi tiết</span></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="rating-container">
+                    <h4>Recent Ratings</h4>
+                    <div class="card shadow border-0 mt-4">
+                      <div class="card-body">
+                        <table class="recently-orders-table table table-hover table-responsive">
+                          <thead>
+                            <tr>
+                              <th>Mã Đơn Hàng</th>
+                              <th>Ngày Mua</th>
+                              <th>Tổng Tiền</th>
+                              <th>Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>#12345</td>
+                              <td>01/09/2024</td>
+                              <td>500,000 VND</td>
+                              <td><span class="badge bg-success">Chi tiết</span></td>
+                            </tr>
+                            <tr>
+                              <td>#12344</td>
+                              <td>30/08/2024</td>
+                              <td>250,000 VND</td>
+                              <td><span class="badge bg-success">Chi tiết</span></td>
+                            </tr>
+                            <tr>
+                              <td>#12343</td>
+                              <td>28/08/2024</td>
+                              <td>1,200,000 VND</td>
+                              <td><span class="badge bg-success">Chi tiết</span></td>
+                            </tr>
+                            <tr>
+                              <td>#12342</td>
+                              <td>26/08/2024</td>
+                              <td>750,000 VND</td>
+                              <td><span class="badge bg-success">Chi tiết</span></td>
+                            </tr>
+                            <tr>
+                              <td>#12341</td>
+                              <td>25/08/2024</td>
+                              <td>320,000 VND</td>
+                              <td><span class="badge bg-success">Chi tiết</span></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="history-chart-container d-flex flex-column gap-4">
+                  <div class="purchase-container">
+                    <h4>Purchase History</h4>
+                    <div class="card shadow border-0 mt-4">
+                      <div class="card-body">
+                        <div class="" style="width: auto; height: auto; object-fit: cover;">
+                          <img src="{% static 'images/Dashboard/toi.png' %}" alt="">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="rating-container">
+                    <h4>Purchase History</h4>
+                    <div class="card shadow border-0 mt-4">
+                      <div class="card-body">
+                        <div class="" style="width: auto; height: auto; object-fit: cover;">
+                          <img src="{% static 'images/Dashboard/chart.jpg' %}" alt="">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    
+    <div id="Shippings" class="shipping_content main_contain" style="display:none">
+      <div class="h-screen flex-grow-1 overflow-y-lg-auto">
+        <!-- Header -->
+        <header class="bg-surface-primary border-bottom pt-6">
+          <div class="container-fluid">
+            <div class="mb-npx">
+              <div class="row align-items-center">
+                <div class="col-sm-6 col-12 mb-4 mb-sm-0">
+                  <!-- Title -->
+                  <h1 class="h2 mb-0 ls-tight">Account Settings</h1>
+                </div>
+                <!-- Actions -->
+                <div class="col-sm-6 col-12 text-sm-end">
+                  <div class="mx-n1">
+                    <a href="#" class="btn d-inline-flex btn-sm btn-neutral mx-1">
+                      <span class=" pe-2">
+                        <i class="bi bi-pencil"></i>
+                      </span>
+                      <span>Edit</span>
+                    </a>
+                    <a href="#" class="btn d-inline-flex btn-sm btn-primary mx-1">
+                      <span class=" pe-2">
+                        <i class="bi bi-plus"></i>
+                      </span>
+                      <span>Create</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <ul class="nav nav-tabs mt-4 overflow-x border-0">
+                <li class="nav-item ">
+                  <a href="#" class="nav-link active">All files</a>
+                </li>
+                <li class="nav-item">
+                  <a href="#" class="nav-link font-regular">Shared</a>
+                </li>
+                <li class="nav-item">
+                  <a href="#" class="nav-link font-regular">File requests</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </header>
+        <!-- Main -->
+        <main class="py-6 bg-surface-secondary">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-xl-12 mx-auto">
+                
+                <div id="shipping" class="section">
+                  <div class="shipping-container">
+                    <div id="shipping-page">
+                            <!-- Shipping containers will be dynamically added here -->
+                    </div>
+                    
+                    <div class="pagination-shipping" id="pagination-shipping">
+                            <!-- Pagination buttons will be populated here by JavaScript -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div id="Reviews" class="shipping_content main_contain" style="display:none">
+      <div class="h-screen flex-grow-1 overflow-y-lg-auto">
+        <!-- Header -->
+        <header class="bg-surface-primary border-bottom pt-6">
+          <div class="container-fluid">
+            <div class="mb-npx">
+              <div class="row align-items-center">
+                <div class="col-sm-6 col-12 mb-4 mb-sm-0">
+                  <!-- Title -->
+                  <h1 class="h2 mb-0 ls-tight">Product Reviews</h1>
+                </div>
+                <!-- Actions -->
+                <div class="col-sm-6 col-12 text-sm-end">
+                  <div class="mx-n1">
+                    <a href="#" class="btn d-inline-flex btn-sm btn-neutral mx-1">
+                      <span class=" pe-2">
+                        <i class="bi bi-pencil"></i>
+                      </span>
+                      <span></span>
+                    </a>
+                    <a href="#" class="btn d-inline-flex btn-sm btn-primary mx-1">
+                      <span class=" pe-2">
+                        <i class="bi bi-plus"></i>
+                      </span>
+                      <span></span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <ul class="nav nav-tabs mt-4 overflow-x border-0">
+                <li class="nav-item ">
+                  <a href="#" class="nav-link active"></a>
+                </li>
+                <li class="nav-item">
+                  <a href="#" class="nav-link font-regular"></a>
+                </li>
+                <li class="nav-item">
+                  <a href="#" class="nav-link font-regular"></a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </header>
+        <!-- Main -->
+        <main class="py-6 bg-surface-secondary" style="width:980px">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-xl-12 mx-auto">                
+                <div id="reviews" class="section">
+                  <div class="reviews-container">
+                    {% for detail in details %}
+                      <div class="product-info" data-product-id="{{detail.product}}">
+                        <h1 class="text-center"></h1>
+                        <table class="table table-bordered">
+                            <tbody>
+                            <tr>
+                                <th scope="row">ID hóa đơn:</th>
+                                <td>{{ detail.hoaDon.maHoaDon }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Tên sản phẩm:</th>
+                                <td>{{ detail.product.title }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Giá sản phẩm:</th>
+                                <td>{{ detail.product.price|floatformat:"-3g" }} VNĐ</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Ảnh sản phẩm:</th>
+                                <td><img src="{{ detail.product.image_pro }}" style="width:100px; height: 100px; "alt=""></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div class="text-center">
+                            <a href="{% url 'product_review' product_id=detail.product.pro_id hoadon_id=detail.hoaDon.maHoaDon %}" class="btn btn-primary">
+                                Review
+                            </a>                    
+                        </div>
+                      </div> 
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  <script type="text/javascript" src="{% static 'js/Dashboard/chuyenTrang.js' %}"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('userLink').classList.add('active');
+    });
+  </script>
+  <script>
+    function showContent(sectionName) 
+    {
+      var main_contains = document.querySelectorAll('.main_contain');
+      main_contains.forEach(function(main_contain) 
+      {
+        main_contain.style.display = 'none';
+      });
+      
+      var select_main_contain = document.getElementById(sectionName);
+      if (select_main_contain)  
+      {
+        select_main_contain.style.setProperty('display', 'block', 'important');
+      }
+    }
+
+  </script>
+  <script>
+    function toggleCountryInput(value) {
+      var countryInput = document.getElementById('country_input');
+      if (value === 'Other') {
+        countryInput.style.display = 'block';
+        countryInput.value = '';  // Clear the input when switching to manual
+      } else {
+        countryInput.style.display = 'none';
+        countryInput.value = value;  // Set the dropdown value as input value
+      }
+    }
+  </script>
+  {% comment %} <script type="text/javascript" src="{% static 'js/Dashboard/phanTrangShipping.js' %}"></script> {% endcomment %}
+  <script>
+  document.addEventListener('DOMContentLoaded', function() 
+  {
+      const orders = {{ orders|safe }};
+      const rowsPerPage = 1;
+      let currentPage = 1;
+  
+      function updateProgressBar(status, container) {
+          const steps = container.querySelectorAll('.shipping-step');
+          steps.forEach((step, index) => {
+              step.classList.toggle('active', index < status);
+          });
+      }
+  
+      function renderOrders(page) {
+          const ordersContainer = document.getElementById('shipping-page');
+          ordersContainer.innerHTML = '';
+          const start = (page - 1) * rowsPerPage;
+          const end = start + rowsPerPage;
+          const paginatedOrders = orders.slice(start, end);
+  
+          paginatedOrders.forEach(order => {
+              const orderHtml = `
+                  <div class="shipping-container d-grid gap-3">
+                      <div class="card-shipping process-shipping">
+                          <div class="shipping-row d-flex justify-content-between px-3 top order-identification">
+                              <div class="d-flex graphic-cube padding-custom">
+                                  <h3>ORDER: <span class="text-primary font-weight-bold order-id">${order.id}</span></h3>
+                              </div>
+                              <div class="d-flex flex-column text-sm-right graphic-cube padding-custom">
+                                  <p class="my-0">Expected Arrival: <span>${order.arrival}</span></p>
+                                  <p class="my-0">Grasshoppers: <span class="font-weight-bold"><a href="${order.link}">${order.link.split('/').pop()}</a></span></p>
+                              </div>
+                          </div>
+                          <div class="shipping-row d-flex justify-content-center">
+                              <div class="col-12">
+                                  <ul id="process-bar" class="text-center">
+                                      <li class="shipping-step" data-step="1"></li>
+                                      <li class="shipping-step" data-step="2"></li>
+                                      <li class="shipping-step" data-step="3"></li>
+                                      <li class="shipping-step final-step" data-step="4"></li>
+                                  </ul>
+                              </div>
+                          </div>
+                          <div class="shipping-row justify-content-around top d-flex">
+                              <div class="shipping-row d-flex icon-container">
+                                  <i class="shipping-icon fa-solid fa-box-open"></i>
+                                  <div class="d-flex flex-column">
+                                      <p class="font-weight-bold">Order<br>Preparation</p>
+                                  </div>
+                              </div>
+                              <div class="shipping-row d-flex icon-container">
+                                  <i class="shipping-icon fa-solid fa-right-to-bracket"></i>
+                                  <div class="d-flex flex-column">
+                                      <p class="font-weight-bold">Complete<br>Packing</p>
+                                  </div>
+                              </div>
+                              <div class="shipping-row d-flex icon-container">
+                                  <i class="shipping-icon fa-solid fa-truck-fast"></i>
+                                  <div class="d-flex flex-column">
+                                      <p class="font-weight-bold">Order<br>Shipping</p>
+                                  </div>
+                              </div>
+                              <div class="shipping-row d-flex icon-container">
+                                  <i class="shipping-icon fa-solid fa-circle-check"></i>                    
+                                  <div class="d-flex flex-column">
+                                      <p class="font-weight-bold">Order<br>Delivering</p>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      <h4 class="ml-3">Update: </h4>
+                      <div class="card-shipping border-0">
+                          <div class="table-container px-1">
+                              <table class="table table-hover table-responsive">
+                                  <thead>
+                                      <tr>
+                                          <th class="fw-bolder px-10">Thời gian</th>
+                                          <th class="fw-bold px-10">Địa điểm</th>
+                                          <th class="fw-bold px-10">Sự kiện</th>
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+                                      ${order.events.map(event => `
+                                          <tr>
+                                              <td class="text-primary fw-bold px-10">${event.time}</td>
+                                              <td class="fw-bold px-10">${event.location}</td>
+                                              <td class="text-success fw-bold px-10">${event.event}</td>
+                                          </tr>
+                                      `).join('')}
+                                  </tbody>
+                              </table>
+                          </div>
+                      </div>
+                      <div class="text-center mb-3 h-10">
+                          <button class="received-btn" data-order-id="${order.id}">Đã nhận hàng</button>
+                      </div>
+                  </div>
+              `;
+              ordersContainer.insertAdjacentHTML('beforeend', orderHtml);
+              const orderContainer = ordersContainer.lastElementChild;
+              updateProgressBar(order.steps, orderContainer);  // Update progress bar based on steps
+          });
+  
+          attachConfirmReceiptListeners();  // Add listener for order confirmation
+      }
+  
+      function attachConfirmReceiptListeners() {
+          document.querySelectorAll('.received-btn').forEach(button => {
+              button.addEventListener('click', function() {
+                  const orderId = this.getAttribute('data-order-id');
+  
+                  fetch('/shop/dashboard/confirm_receipt/', {
+                      method: 'POST',
+                      headers: {
+                          'Content-Type': 'application/json',
+                          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                      },
+                      body: JSON.stringify({ order_id: orderId })
+                  })
+                  .then(response => response.json())
+                  .then(data => {
+                      if (data.status === 'success') {
+                          this.parentElement.innerHTML = '<span class="text-success">Order received by customer</span>';
+                      } else {
+                          alert(data.message);
+                      }
+                  })
+                  .catch(error => console.error('Error:', error));
+              });
+          });
+      }
+  
+      function renderPagination() {
+          const paginationContainer = document.getElementById('pagination-shipping');
+          paginationContainer.innerHTML = '';
+          const totalPages = Math.ceil(orders.length / rowsPerPage);
+  
+          for (let i = 1; i <= totalPages; i++) {
+              const button = document.createElement('button');
+              button.classList.add('pagination-button');
+              button.textContent = i;
+              if (i === currentPage) {
+                  button.classList.add('active');
+              }
+              button.addEventListener('click', () => {
+                  currentPage = i;
+                  renderOrders(currentPage);
+                  renderPagination();
+              });
+              paginationContainer.appendChild(button);
+          }
+      }
+  
+      renderOrders(currentPage);
+      renderPagination();
+  });
+  </script>
+
+  <script>
+    // Function to switch between content sections
+    function showContentUser(section) {
+      var user_info = document.getElementById('user_info');
+      var account_info = document.getElementById('account_info');
+  
+      if (section === 'user_info') {
+        user_info.style.display = 'block';
+        account_info.style.display = 'none';
+        localStorage.setItem('activeSection', 'user_info'); // Save the active section
+      } else if (section === 'account_info') {
+        user_info.style.display = 'none';
+        account_info.style.display = 'block';
+        localStorage.setItem('activeSection', 'account_info'); // Save the active section
+      }
+    }
+  
+    // On page load, check if a section was previously saved
+    window.onload = function() {
+      var savedSection = localStorage.getItem('activeSection');
+      if (savedSection) {
+        showContentUser(savedSection); // Show the saved section
+      } else {
+        showContentUser('user_info'); // Default to 'user_info'
+      }
+    }
+  </script>
+  
+    
+</body>
+</html>

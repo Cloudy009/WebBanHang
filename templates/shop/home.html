@@ -1,0 +1,1083 @@
+{% extends "partion/header_footer.html" %}
+
+{% block content %}
+{% load static %}
+<script src="https://api.opencagedata.com/geocode/v1/javascript?key=bfe7215d6c5342859e93b45320c10639"></script>
+
+<section class="py-3" style="background-image: url('images/background-pattern.jpg');background-repeat: no-repeat;background-size: cover;">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+
+        <div class="banner-blocks">
+        
+          <div class="banner-ad large bg-info block-1">
+
+            <div class="swiper main-swiper">
+              <div class="swiper-wrapper">
+                
+                <div class="swiper-slide">
+                  <div class="row banner-content p-5">
+                    <div class="content-wrapper col-md-7">
+                      <div class="categories my-3">100% natural</div>
+                      <h3 class="display-4">Fresh Smoothie & Summer Juice</h3>
+                      <p>Thức uống tươi mát được làm từ trái cây và rau củ tự nhiên, mang đến hương vị thơm ngon và bổ dưỡng.</p>
+                      <a href="{% url 'product_page' %}" class="btn btn-outline-dark btn-lg text-uppercase fs-6 rounded-1 px-4 py-3 mt-3">Shop Now</a>
+                    </div>
+                    <div class="img-wrapper col-md-5">
+                      <img src="{% static 'images/product-thumb-1.png' %}" class="img-fluid">
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="swiper-slide">
+                  <div class="row banner-content p-5">
+                    <div class="content-wrapper col-md-7">
+                      <div class="categories mb-3 pb-3">100% natural</div>
+                      <h3 class="banner-title">Fresh Smoothie & Summer Juice</h3>
+                      <p>Thức uống thanh mát, giàu vitamin C, giải nhiệt và sảng khoái.</p>
+                      <a href="{% url 'product_page' %}" class="btn btn-outline-dark btn-lg text-uppercase fs-6 rounded-1">Shop Collection</a>
+                    </div>
+                    <div class="img-wrapper col-md-5">
+                      <img src="{% static 'images/lemon.png' %}" class="img-fluid">
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="swiper-slide">
+                  <div class="row banner-content p-5">
+                    <div class="content-wrapper col-md-7">
+                      <div class="categories mb-3 pb-3">100% natural</div>
+                      <h3 class="banner-title">Bakery & Pastries</h3>
+                      <p>Bánh mì Việt Nam: Giòn rụm, nhân thịt đậm đà, rau tươi, vị truyền thống</p>
+                      <a href="{% url 'product_page' %}" class="btn btn-outline-dark btn-lg text-uppercase fs-6 rounded-1">Shop Collection</a>
+                    </div>
+                    <div class="img-wrapper col-md-5">
+                      <img src="{% static 'images/bread.png' %}" class="img-fluid">
+                    </div>
+                  </div>
+                </div>
+                <div class="swiper-slide">
+                  <div class="row banner-content p-5">
+                    <div class="content-wrapper col-md-7">
+                      <div class="categories mb-3 pb-3">100% natural</div>
+                      <h3 class="banner-title">Bakery & Pastries</h3>
+                      <p>Tiramisu: Món tráng miệng Ý với lớp bánh mềm mịn, hương cà phê đậm đà và kem mascarpone béo ngậy.</p>
+                      <a href="{% url 'product_page' %}" class="btn btn-outline-dark btn-lg text-uppercase fs-6 rounded-1">Shop Collection</a>
+                    </div>
+                    <div class="img-wrapper col-md-5">
+                      <img src="{% static 'images/tiramisu.png' %}" class="img-fluid">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="swiper-pagination"></div>
+
+            </div>
+          </div>
+          
+          <div class="banner-ad bg-success-subtle block-2" style="background:url('{% static 'images/milktea.png' %}') no-repeat;background-position: right bottom">
+            <div class="row banner-content p-5">
+              <div class="content-wrapper col-md-7">
+                <div class="categories sale mb-3 pb-3">100% natural</div>
+                <h3 class="banner-title">Milk Tea Delights</h3>
+                {% for category in categories|slice:":1" %} 
+                    <a href="{% url 'product_page_by_category' category.cate_id %}" class="d-flex align-items-center nav-link">
+                      Shop Collection <svg width="24" height="24"><use xlink:href="#arrow-right"></use></svg>
+                    </a>
+                {% endfor %}              
+              </div>
+            </div>
+          </div>
+
+          <div class="banner-ad bg-danger block-3" style="background:url('{% static 'images/ad-image-2.png' %}') no-repeat;background-position: right bottom">
+            <div class="row banner-content p-5">
+              <div class="content-wrapper col-md-7">
+                <div class="categories sale mb-3 pb-3">100% natural</div>
+                <h3 class="item-title">Baked Products</h3>
+                {% for category in categories|slice:":3" %}
+                  {% if forloop.counter == 3 %}
+                    <a href="{% url 'product_page_by_category' category.cate_id %}" class="d-flex align-items-center nav-link">
+                      Shop Collection <svg width="24" height="24"><use xlink:href="#arrow-right"></use></svg>
+                    </a>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- / Banner Blocks -->
+          
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5 overflow-hidden">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+
+        <div class="section-header d-flex flex-wrap justify-content-between mb-5">
+          <h2 class="section-title">Category</h2>
+
+          <div class="d-flex align-items-center">
+            <a href="{% url 'product_page' %}" class="btn-link text-decoration-none">View All Products →</a>
+            <div class="swiper-buttons">
+              <button class="swiper-prev category-carousel-prev btn btn-yellow">❮</button>
+              <button class="swiper-next category-carousel-next btn btn-yellow">❯</button>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+
+        <div class="category-carousel swiper">
+          <div class="swiper-wrapper">
+            {% for category in categories %}
+              <a href="{% url 'product_page_by_category' category.cate_id %}" class="nav-link category-item swiper-slide">
+                <img src="{{ category.image_cat }}" alt="Category Thumbnail">
+                <h3 class="category-title">{{ category.name }}</h3>
+              </a>
+            {% endfor %}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+{% if user.is_authenticated %}
+<section class="py-5 overflow-hidden">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+
+        <div class="section-header d-flex flex-wrap justify-content-between my-5">
+          
+          <h2 class="section-title">Top suggestions for you</h2>
+
+          <div class="d-flex align-items-center">
+            <a href="{% url 'product_page' %}" class="btn-link text-decoration-none">View All Products →</a>
+            <div class="swiper-buttons">
+              <button class="swiper-prev products-carousel-prev btn btn-primary">❮</button>
+              <button class="swiper-next products-carousel-next btn btn-primary">❯</button>
+            </div>  
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+
+        <div class="products-carousel swiper">
+          <div class="swiper-wrapper">
+            
+            {% for product in recommended_user_products %}
+              <div class="product-item swiper-slide">
+                <a href="#" class="btn-wishlist"><svg width="24" height="24"><use xlink:href="#heart"></use></svg></a>
+                <figure>
+                  <a href="single-product.html" title="Product Title">
+                    <img src="{{ product.image_pro }}"  class="tab-image">
+                  </a>
+                </figure>
+                <h3>{{ product.product__title }}</h3>
+                <!-- <span class="rating"><svg width="24" height="24" class="text-primary"><use xlink:href="#star-solid"></use></svg> 4.5</span> -->
+                <!-- <span class="price">$18.00</span> -->
+                <div class="d-flex align-items-center justify-content-between">
+                 
+                  <a href="{% url 'product-detail' identifier=product.product__pro_id %}" class="nav-link">Detail<iconify-icon icon="uil:shopping-cart"></a>
+                </div>
+              </div> 
+            {% endfor %}     
+            
+          </div>
+        </div>
+        <!-- / products-carousel -->
+
+      </div>
+    </div>
+  </div>
+</section> 
+
+<section class="py-5 overflow-hidden">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+
+        <div class="section-header d-flex flex-wrap justify-content-between my-5">
+          
+          <h2 class="section-title">Product Suggestions For You</h2>
+
+          <div class="d-flex align-items-center">
+            <a href="{% url 'product_page' %}" class="btn-link text-decoration-none">View All Products →</a>
+            <div class="swiper-buttons">
+              <button class="swiper-prev products-carousel-prev btn btn-primary">❮</button>
+              <button class="swiper-next products-carousel-next btn btn-primary">❯</button>
+            </div>  
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+
+        <div class="products-carousel swiper">
+          <div class="swiper-wrapper">
+            
+            {% for product in recommended_user_products %}
+              <div class="product-item swiper-slide">
+                <a href="#" class="btn-wishlist"><svg width="24" height="24"><use xlink:href="#heart"></use></svg></a>
+                <figure>
+                  <a href="single-product.html" title="Product Title">
+                    <img src="{{ product.image_pro }}"  class="tab-image">
+                  </a>
+                </figure>
+                <h3>{{ product.product__title }}</h3>
+                <!-- <span class="rating"><svg width="24" height="24" class="text-primary"><use xlink:href="#star-solid"></use></svg> 4.5</span> -->
+                <!-- <span class="price">$18.00</span> -->
+                <div class="d-flex align-items-center justify-content-between">
+                  {% comment %} <div class="input-group product-qty">
+                      <span class="input-group-btn">
+                          <button type="button" class="quantity-left-minus btn btn-danger btn-number" data-type="minus">
+                            <svg width="16" height="16"><use xlink:href="#minus"></use></svg>
+                          </button>
+                      </span>
+                      <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1">
+                      <span class="input-group-btn">
+                          <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus">
+                              <svg width="16" height="16"><use xlink:href="#plus"></use></svg>
+                          </button>
+                      </span>
+                  </div> {% endcomment %}
+                  <a href="{% url 'product-detail' identifier=product.product__pro_id %}" class="nav-link">Detail<iconify-icon icon="uil:shopping-cart"></a>
+                </div>
+              </div> 
+            {% endfor %}     
+            
+          </div>
+        </div>
+        <!-- / products-carousel -->
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5 overflow-hidden">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+
+        <div class="section-header d-flex flex-wrap justify-content-between my-5">
+          
+          <h2 class="section-title">You May Also Like</h2>
+
+          <div class="d-flex align-items-center">
+            <a href="{% url 'product_page' %}" class="btn-link text-decoration-none">View All Products →</a>
+            <div class="swiper-buttons">
+              <button class="swiper-prev products-carousel-prev btn btn-primary">❮</button>
+              <button class="swiper-next products-carousel-next btn btn-primary">❯</button>
+            </div>  
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+
+        <div class="products-carousel swiper">
+          <div class="swiper-wrapper">
+            
+            {% for product in liked_recommendations %}
+              <a href="{% url 'product-detail' identifier=product.id %}" class="nav-link">
+                <div class="product-item swiper-slide" style="width: 250px">
+                  <figure>
+                      <img src="{{ product.image }}"  class="tab-image">
+                  </figure>
+                  <h3>{{ product.title }}</h3>
+                  {% comment %} <span class="rating"><svg width="24" height="24" class="text-primary"><use xlink:href="#star-solid"></use></svg> 4.5</span>
+                  <span class="price">$18.00</span> {% endcomment %}
+                </div> 
+              </a>
+            {% endfor %}     
+            
+          </div>
+        </div>
+        <!-- / products-carousel -->
+
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endif %}
+<!-- TRENDING PRODUCTS -->
+
+<section class="py-5">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="bootstrap-tabs product-tabs">
+          <div class="tabs-header d-flex justify-content-between border-bottom my-5">
+            <h3>Sample Products</h3>
+            <nav>
+              <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <a href="#" class="nav-link text-uppercase fs-6 active" id="nav-all-tab" data-bs-toggle="tab" data-bs-target="#nav-all">All</a>
+                {% for category in categories %}
+                  <a href="#" class="nav-link text-uppercase fs-6" id="nav-{{ category.name|slugify }}-tab" data-bs-toggle="tab" data-bs-target="#nav-{{ category.name|slugify }}">{{ category.name }}</a>
+                {% endfor %}
+              </div>
+            </nav>
+          </div>
+          <div class="tab-content" id="nav-tabContent">
+            <!-- Tab All -->
+            <div class="tab-pane fade show active" id="nav-all" role="tabpanel" aria-labelledby="nav-all-tab">
+              <div class="product-grid row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
+                {% for category, products in category_products.items %}
+                  {% for product in products %}
+                    <a href="{% url 'product-detail' identifier=product.id %}" class="nav-link"><iconify-icon icon="uil:shopping-cart">
+                      <div class="col">
+                        <div class="product-item">
+                          <!-- <a href="#" class="btn-wishlist"><svg width="24" height="24"><use xlink:href="#heart"></use></svg></a> -->
+                          <figure>
+                              <img src="{{ product.image }}" class="tab-image" alt="{{ product.title }}">
+                            
+                          </figure>
+                          <h3>{{ product.title }}</h3>
+                          </div>
+                      </div>
+                    </a>
+                  {% endfor %}
+                {% endfor %}
+              </div>
+            </div>
+
+            <!-- Tabs for Categories -->
+            {% for category, products in category_products.items %}
+              <div class="tab-pane fade" id="nav-{{ category|slugify }}" role="tabpanel" aria-labelledby="nav-{{ category|slugify }}-tab">
+                <div class="product-grid row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
+                  {% for product in products %}
+                    <div class="col">
+                      <div class="product-item">
+                        <a href="#" class="btn-wishlist"><svg width="24" height="24"><use xlink:href="#heart"></use></svg></a>
+                        <figure>
+                          <a href="single-product.html" title="{{ product.title }}">
+                            <img src="{{ product.image }}" class="tab-image" alt="{{ product.title }}">
+                          </a>
+                        </figure>
+                        <h3>{{ product.title }}</h3>
+                        <span class="price">${{ product.price }}</span>
+                        <a href="#" class="nav-link">Add to Cart</a>
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5 overflow-hidden">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+
+        <div class="section-header d-flex flex-wrap justify-content-between my-5">
+          
+          <h2 class="section-title">Trending products</h2>
+
+          <div class="d-flex align-items-center">
+            <a href="{% url 'product_page' %}" class="btn-link text-decoration-none">View All Products →</a>
+            <div class="swiper-buttons">
+              <button class="swiper-prev products-carousel-prev btn btn-primary">❮</button>
+              <button class="swiper-next products-carousel-next btn btn-primary">❯</button>
+            </div>  
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+
+        <div class="products-carousel swiper">
+          <div class="swiper-wrapper">
+            
+            {% for product in trending_products %}
+              <div class="product-item swiper-slide">
+                <a href="#" class="btn-wishlist"><svg width="24" height="24"><use xlink:href="#heart"></use></svg></a>
+                <figure>
+                  <a href="single-product.html" title="Product Title">
+                    <img src="{{ product.image_pro }}"  class="tab-image">
+                  </a>
+                </figure>
+                <h3>{{ product.product__title }}</h3>
+                <span class="qty">{{ product.customer_count }} Customers Sold</span>
+                <!-- <span class="rating"><svg width="24" height="24" class="text-primary"><use xlink:href="#star-solid"></use></svg> 4.5</span> -->
+                <span class="price">{{ product.price }} VND</span>
+                <div class="d-flex align-items-center justify-content-between">
+                  
+                  <a href="{% url 'product-detail' identifier=product.product__pro_id %}" class="nav-link">Detail<iconify-icon icon="uil:shopping-cart"></a>
+                </div>
+              </div> 
+            {% endfor %}     
+            
+          </div>
+        </div>
+        <!-- / products-carousel -->
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container-fluid">
+    <div class="row">
+      
+      <div class="col-md-6">
+        <div class="banner-ad bg-danger mb-3" style="background: url('images/ad-image-3.png');background-repeat: no-repeat;background-position: right bottom;">
+          <div class="banner-content p-5">
+
+            <div class="categories text-primary fs-3 fw-bold">Upto 25% Off</div>
+            <h3 class="banner-title">Luxa Dark Chocolate</h3>
+            <p>Very tasty & creamy vanilla flavour creamy muffins.</p>
+            <a href="#" class="btn btn-dark text-uppercase">Show Now</a>
+
+          </div>
+        
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="banner-ad bg-info" style="background: url('images/ad-image-4.png');background-repeat: no-repeat;background-position: right bottom;">
+          <div class="banner-content p-5">
+
+            <div class="categories text-primary fs-3 fw-bold">Upto 25% Off</div>
+            <h3 class="banner-title">Creamy Muffins</h3>
+            <p>Very tasty & creamy vanilla flavour creamy muffins.</p>
+            <a href="#" class="btn btn-dark text-uppercase">Show Now</a>
+
+          </div>
+        
+        </div>
+      </div>
+         
+    </div>
+  </div>
+</section>
+
+<section class="py-5 overflow-hidden">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+
+        <div class="section-header d-flex flex-wrap justify-content-between my-5">
+          
+          <h2 class="section-title">Best selling products</h2>
+
+          <div class="d-flex align-items-center">
+            <a href="{% url 'product_page' %}" class="btn-link text-decoration-none">View All Products →</a>
+            <div class="swiper-buttons">
+              <button class="swiper-prev products-carousel-prev btn btn-primary">❮</button>
+              <button class="swiper-next products-carousel-next btn btn-primary">❯</button>
+            </div>  
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+
+        <div class="products-carousel swiper">
+          <div class="swiper-wrapper">
+            
+            {% for product in top_selling_products %}
+              <div class="product-item swiper-slide">
+                <a href="#" class="btn-wishlist"><svg width="24" height="24"><use xlink:href="#heart"></use></svg></a>
+                <figure>
+                  <a href="single-product.html" title="Product Title">
+                    <img src="{{ product.image_pro }}"  class="tab-image">
+                  </a>
+                </figure>
+                <h3>{{ product.product__title }}</h3>
+                <span class="qty">{{ product.total_sold }} Sold</span><span class="rating"><svg width="24" height="24" class="text-primary"><use xlink:href="#star-solid"></use></svg> 4.5</span>
+                <span class="price">{{product.price}} VND</span>
+                <div class="d-flex align-items-center justify-content-between">
+                  {% comment %} <div class="input-group product-qty">
+                      <span class="input-group-btn">
+                          <button type="button" class="quantity-left-minus btn btn-danger btn-number" data-type="minus">
+                            <svg width="16" height="16"><use xlink:href="#minus"></use></svg>
+                          </button>
+                      </span>
+                      <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1">
+                      <span class="input-group-btn">
+                          <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus">
+                              <svg width="16" height="16"><use xlink:href="#plus"></use></svg>
+                          </button>
+                      </span>
+                  </div> {% endcomment %}
+                  <a href="{% url 'product-detail' identifier=product.product__pro_id %}" class="nav-link">Detail<iconify-icon icon="uil:shopping-cart"></a>
+                </div>
+              </div> 
+            {% endfor %}     
+            
+          </div>
+        </div>
+        <!-- / products-carousel -->
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container-fluid">
+
+    <div class="bg-secondary py-5 my-5 rounded-5" style="background: url('images/bg-leaves-img-pattern.png') no-repeat;">
+      <div class="container my-5">
+        <div class="row">
+          <div class="col-md-6 p-5">
+            <div class="section-header">
+              <h2 class="section-title display-4">Get <span class="text-primary">25% Discount</span> on your first purchase</h2>
+            </div>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dictumst amet, metus, sit massa posuere maecenas. At tellus ut nunc amet vel egestas.</p>
+          </div>
+          <div class="col-md-6 p-5">
+            <form action="{% url 'send_email' %}" method="post">
+              {% csrf_token %}
+                <div class="mb-3">
+                  <label for="name" class="form-label">Name</label>
+                  <input type="text" class="form-control form-control-lg" name="name" id="name" placeholder="Name">
+                </div>
+                <div class="mb-3">
+                  <label for="" class="form-label">Email</label>
+                  <input type="email" class="form-control form-control-lg" name="email" id="email" placeholder="abc@mail.com">
+                </div>
+                <div class="mb-3">
+                  <label for="phone_number" class="form-label">Phone:</label>
+                  <input type="tel" name="phone_number" id="phone_number" placeholder="Your Phone Number" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                  <label for="message">Message:</label>
+                  <textarea name="message" id="message" placeholder="Your Message" class="form-control message_input" required></textarea>
+                </div>
+                <div class="form-check form-check-inline mb-3">
+                  <label class="form-check-label" for="subscribe">
+                  <input class="form-check-input" type="checkbox" id="subscribe" value="subscribe">
+                  Subscribe to the newsletter</label>
+                </div>
+                <div class="d-grid gap-2">
+                  <button type="submit" class="btn btn-dark btn-lg">Submit</button>
+                </div>
+            </form>
+            
+          </div>
+          
+        </div>
+        
+      </div>
+    </div>
+    
+  </div>
+</section>
+
+<section class="py-5 overflow-hidden">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+
+        <div class="section-header d-flex justify-content-between">
+          
+          <h2 class="section-title">Just arrived</h2>
+
+          <div class="d-flex align-items-center">
+            <a href="{% url 'product_page' %}" class="btn-link text-decoration-none">View All Products →</a>
+            <div class="swiper-buttons">
+              <button class="swiper-prev products-carousel-prev btn btn-primary">❮</button>
+              <button class="swiper-next products-carousel-next btn btn-primary">❯</button>
+            </div>  
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+
+        <div class="products-carousel swiper">
+          <div class="swiper-wrapper">
+            
+            {% for product in newProducts %}
+            <div class="product-item swiper-slide">
+              <a href="#" class="btn-wishlist"><svg width="24" height="24"><use xlink:href="#heart"></use></svg></a>
+              <figure>
+                <a href="{% url 'product-detail' identifier=product.id %}" title="{{ product.title }}">
+                  <img src="{{ product.image }}" class="tab-image">
+                </a>
+              </figure>
+              <h3>{{ product.title }}</h3>
+              <span class="qty">1 Unit</span><span class="rating"><svg width="24" height="24" class="text-primary"><use xlink:href="#star-solid"></use></svg> 4.5</span>
+              <span class="price">{{ product.price }} VND</span>
+              <div class="d-flex align-items-center justify-content-between">
+                {% comment %} <div class="input-group product-qty">
+                    <span class="input-group-btn">
+                        <button type="button" class="quantity-left-minus btn btn-danger btn-number" data-type="minus">
+                          <svg width="16" height="16"><use xlink:href="#minus"></use></svg>
+                        </button>
+                    </span>
+                    <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1">
+                    <span class="input-group-btn">
+                        <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus">
+                            <svg width="16" height="16"><use xlink:href="#plus"></use></svg>
+                        </button>
+                    </span>
+                </div> {% endcomment %}
+                <a href="{% url 'product-detail' identifier=product.id %}" class="nav-link">Detail<iconify-icon icon="uil:shopping-cart"></a>
+              </div>
+            </div>
+          {% endfor %}
+           
+          </div>
+        </div>
+        <!-- / products-carousel -->
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="latest-blog" class="py-5" id="about-us-section">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="section-header d-flex align-items-center justify-content-between my-5">
+        <h2 class="section-title">Our Recent Blog</h2>
+        <div class="btn-wrap align-right">
+          {% comment %} <a href="#" class="d-flex align-items-center nav-link">Read All Articles <svg width="24" height="24"><use xlink:href="#arrow-right"></use></svg></a> {% endcomment %}
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <article class="post-item card border-0 shadow-sm p-3">
+          <div class="image-holder zoom-effect">
+            <div>
+              <img src="{% static 'images/who.jpg' %}" alt="post" class="card-img-top">
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="post-meta d-flex text-uppercase gap-3 my-2 align-items-center">
+              {% comment %} <div class="meta-date"><svg width="16" height="16"><use xlink:href="#calendar"></use></svg>22 Aug 2021</div> {% endcomment %}
+              {% comment %} <div class="meta-categories"><svg width="16" height="16"><use xlink:href="#category"></use></svg>tips & tricks</div> {% endcomment %}
+            </div>
+            <div class="post-header">
+              <h3 class="post-title">
+                <p class="text-decoration-none">Team Introduction</p>
+              </h3>
+              <p>We are two dedicated students who built this website to provide a platform where you can find high-quality products at affordable prices. 
+                Our mission is to create an intuitive online shopping experience, 
+                combining convenience and satisfaction for every customer.</p>
+            </div>
+          </div>
+        </article>
+      </div>
+      <div class="col-md-4">
+        <article class="post-item card border-0 shadow-sm p-3">
+          <div class="image-holder zoom-effect">
+            <div>
+              <img src="{% static 'images/why.jpg' %}" alt="post" class="card-img-top">
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="post-meta d-flex text-uppercase gap-3 my-2 align-items-center">
+              {% comment %} <div class="meta-date"><svg width="16" height="16"><use xlink:href="#calendar"></use></svg>25 Aug 2021</div> {% endcomment %}
+              {% comment %} <div class="meta-categories"><svg width="16" height="16"><use xlink:href="#category"></use></svg>trending</div> {% endcomment %}
+            </div>
+            <div class="post-header">
+              <h3 class="post-title">
+                <p class="text-decoration-none">Why Choose Us?</p>
+              </h3>
+              <p>As students, we understand the importance of simplicity and functionality. 
+                That’s why we focus on offering a smooth shopping journey with easy navigation, 
+                secure payment options, and fast delivery. Our goal is to ensure that each customer feels valued and enjoys the process of shopping with us.
+              </p>
+            </div>
+          </div>
+        </article>
+      </div>
+      <div class="col-md-4">
+        <article class="post-item card border-0 shadow-sm p-3">
+          <div class="image-holder zoom-effect">
+            <div>
+              <img src="{% static 'images/vision.jpg' %}" alt="post" class="card-img-top">
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="post-meta d-flex text-uppercase gap-3 my-2 align-items-center">
+              {% comment %} <div class="meta-date"><svg width="16" height="16"><use xlink:href="#calendar"></use></svg>28 Aug 2021</div> {% endcomment %}
+              {% comment %} <div class="meta-categories"><svg width="16" height="16"><use xlink:href="#category"></use></svg>inspiration</div> {% endcomment %}
+            </div>
+            <div class="post-header">
+              <h3 class="post-title">
+                <p class="text-decoration-none">Our Vision</p>
+              </h3>
+              <p>
+                We aspire to grow and expand our online store, 
+                offering even more products and services in the future. 
+                Through this project, we aim to continue learning, enhancing our skills, 
+                and building a website that meets the expectations of our customers, while keeping up with the latest e-commerce trends.
+              </p>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5 my-5" id="thank-you-section">
+  <div class="container-fluid">
+
+    <div class="bg-warning py-5 rounded-5" style="background-image: url('images/bg-pattern-2.png') no-repeat;">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4">
+            <img src="{% static 'images/thankyou.png' %}" alt="phone" class="image-float img-fluid">
+          </div>
+          <div class="col-md-8">
+            <h2 class="my-5">Welcome and Thank You for Your Order!</h2>
+            <p>
+              We would like to extend our heartfelt thanks for visiting our store and placing an order with us. 
+              Your support means the world to us, and we are delighted to have the opportunity to serve you. 
+              We hope you enjoy your meal and have a wonderful experience with our products. 
+              We can’t wait to welcome you back again soon!
+            </p>
+            <div class="d-flex gap-2 flex-wrap">
+              {% comment %} <img src="images/app-store.jpg" alt="app-store">
+              <img src="images/google-play.jpg" alt="google-play"> {% endcomment %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</section>
+
+<section class="py-5" id="check-map">
+  <div class="container-fluid">
+    <div class="bg-transparent pb-5 rounded-5 border border-1 border-dark">
+      <div class="container">
+        <div class="text-center pt-5">
+          <h2 class="section-title" style="color: green;">KIỂM TRA KHOẢNG CÁCH GIAO HÀNG</h2>
+        </div>    
+        <!-- Phần giải thích về giao hàng -->
+        <div class="text-center">
+          <p><strong>GIỚI HẠN TRONG BÁN KÍNH 5KM</strong></p>
+          <p>Để đảm bảo chất lượng đồ ăn và thức uống, chúng tôi chỉ có thể giao hàng trong bán kính 5km từ cửa hàng. Bạn có thể kiểm tra khoảng cách từ địa chỉ của mình đến cửa hàng bằng cách nhập địa chỉ dưới đây.</p>
+        </div>
+      </div>
+      
+      <div class="row">
+        <!-- Cột hiển thị bản đồ -->
+        <div class="col-md-6">
+          <div id="map-container">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.425668522268!2d106.74795747369184!3d10.855193189298406!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317527945a12c851%3A0x6583b102d1cbb0e7!2zMTg3IFTDtCBOZ-G7jWMgVsOibiwgTGluaCDEkMO0bmcsIFRo4bunIMSQ4bupYywgSOG7kyBDaMOtIE1pbmgsIFZpZXRuYW0!5e0!3m2!1sen!2sau!4v1736436172826!5m2!1sen!2sau"
+                    width="100%" height="600" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            <div class="direction-btn mt-3">
+              <a href="https://www.google.com/maps/dir/?api=1&destination=187 Tô Ngọc Vân, Linh Đông, Thủ Đức, Hồ Chí Minh"
+                 target="_blank" class="btn btn-success">
+                 <i class="fa-solid fa-diamond-turn-right"></i> Chỉ đường đến cửa hàng
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cột kiểm tra khoảng cách -->
+        <div class="col-md-6">
+          <h4 class="mb-3">Kiểm tra vị trí của bạn</h4>
+          <div class="d-flex gap-1" style="color: rgba(21, 113, 38, 0.694)">
+            <i class="mt-3 fa-xl fa-solid fa-location-crosshairs"></i>
+            <div class="d-flex flex-column">
+              <strong>Địa chỉ hiện tại của bạn:</strong> 
+              <span id="currentLocation" class="text-black">Phúc Long Coffee & Tea (Phan Xích Long), 95 Phan Xích Long, Phường 2, Phú Nhuận, Hồ Chí Minh, Việt Nam</span>
+            </div>
+          </div> <!-- Thêm phần tử span -->
+          <form id="locationForm" class="mb-3 mt-3">
+            {% csrf_token %}
+            <label for="userAddressInput" class="form-label" style="color: rgba(21, 113, 38, 0.694)">
+              <i class="fa-lg fa-regular fa-pen-to-square"></i> 
+              <strong>Nhập địa chỉ giao hàng</strong></label>
+            <input type="text" id="userAddressInput" class="form-control" placeholder="Nhập địa chỉ" required>
+            <button type="submit" class="btn btn-primary mt-3">Kiểm tra</button>
+          </form>
+          <div id="distanceResult" class=""></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+  // Lấy địa chỉ hiện tại của khách hàng bằng Geolocation API
+  function getCurrentLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+
+        // Sử dụng OpenCage Geocode API để chuyển đổi tọa độ thành địa chỉ
+        const API_KEY = "bfe7215d6c5342859e93b45320c10639";  // Thay thế bằng API Key thực tế
+        const geocoder = new OpenCageGeocode(API_KEY);
+        const query = `${latitude},${longitude}`;
+
+        geocoder.geocode(query, function(data) {
+          if (data.status.code === 200) {
+            const userAddress = data.results[0].formatted;
+            // Hiển thị địa chỉ vào span
+            document.getElementById('currentLocation').innerText = userAddress;
+          } else {
+            console.error("Không thể lấy địa chỉ từ tọa độ.");
+            document.getElementById('currentLocation').innerText = "Không thể xác định địa chỉ.";
+          }
+        });
+      }, function(error) {
+        console.error("Không thể lấy vị trí của bạn.", error);
+        document.getElementById('currentLocation').innerText = "Không thể lấy vị trí của bạn.";
+      });
+    } else {
+      console.error("Trình duyệt không hỗ trợ Geolocation.");
+      document.getElementById('currentLocation').innerText = "Trình duyệt không hỗ trợ Geolocation.";
+    }
+  }
+
+  // Gọi hàm lấy vị trí hiện tại khi trang được tải
+  document.addEventListener('DOMContentLoaded', function () {
+    getCurrentLocation();
+  });
+
+  document.getElementById('locationForm').addEventListener('submit', function(e) {
+    e.preventDefault(); // Ngăn chặn submit mặc định
+
+    const userAddress = document.getElementById('userAddressInput').value;
+    const distanceResult = document.getElementById('distanceResult');
+
+    fetch('/shop/check-user-distance/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken') // Hàm lấy CSRF token
+        },
+        body: JSON.stringify({ user_address: userAddress })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            distanceResult.innerText = `Lỗi: ${data.error}`;
+        } else {
+            distanceResult.innerText = data.message;
+        }
+    })
+    .catch(error => {
+        console.error('Lỗi:', error);
+        distanceResult.innerText = 'Có lỗi xảy ra khi xử lý yêu cầu.';
+    });
+});
+
+// Hàm lấy CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+</script>
+<script>
+// Hàm lấy địa chỉ hiện tại của người dùng bằng Geolocation API
+function getCurrentLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+
+            // Hiển thị tọa độ của người dùng trên giao diện
+            document.getElementById('currentLocation').innerText = `Latitude: ${latitude}, Longitude: ${longitude}`;
+
+            // Gửi dữ liệu latitude và longitude đến Django views qua AJAX
+            fetch('/shop/get-address-from-coordinates/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')  // Hàm lấy CSRF token
+                },
+                body: JSON.stringify({
+                    latitude: latitude,
+                    longitude: longitude
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.address) {
+                    // Hiển thị địa chỉ từ Django lên giao diện
+                    document.getElementById('currentLocation').innerText = `${data.address}`;
+                } else {
+                    console.error("Không thể tìm thấy địa chỉ từ tọa độ.");
+                    document.getElementById('currentLocation').innerText = "Không thể xác định địa chỉ.";
+                }
+            })
+            .catch(error => {
+                console.error("Có lỗi khi gọi API:", error);
+                document.getElementById('currentLocation').innerText = "Lỗi khi gọi API.";
+            });
+        }, function(error) {
+            console.error("Không thể lấy vị trí của bạn.", error);
+            document.getElementById('currentLocation').innerText = "Không thể lấy vị trí của bạn.";
+        });
+    } else {
+        console.error("Trình duyệt không hỗ trợ Geolocation.");
+        document.getElementById('currentLocation').innerText = "Trình duyệt không hỗ trợ Geolocation.";
+    }
+}
+
+// Hàm lấy CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// Gọi hàm lấy vị trí khi trang được tải
+document.addEventListener('DOMContentLoaded', function () {
+    getCurrentLocation(); // Lấy tọa độ và địa chỉ khi trang được tải
+});
+
+
+
+</script>
+
+
+<section class="py-5">
+  <div class="container-fluid">
+    <div class="row row-cols-1 row-cols-sm-3 row-cols-lg-5">
+      <div class="col">
+        <div class="card mb-3 border-0">
+          <div class="row">
+            <div class="col-md-2 text-dark">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M21.5 15a3 3 0 0 0-1.9-2.78l1.87-7a1 1 0 0 0-.18-.87A1 1 0 0 0 20.5 4H6.8l-.33-1.26A1 1 0 0 0 5.5 2h-2v2h1.23l2.48 9.26a1 1 0 0 0 1 .74H18.5a1 1 0 0 1 0 2h-13a1 1 0 0 0 0 2h1.18a3 3 0 1 0 5.64 0h2.36a3 3 0 1 0 5.82 1a2.94 2.94 0 0 0-.4-1.47A3 3 0 0 0 21.5 15Zm-3.91-3H9L7.34 6H19.2ZM9.5 20a1 1 0 1 1 1-1a1 1 0 0 1-1 1Zm8 0a1 1 0 1 1 1-1a1 1 0 0 1-1 1Z"/></svg>
+            </div>
+            <div class="col-md-10">
+              <div class="card-body p-0">
+                <h5>Free delivery</h5>
+                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipi elit.</p>
+              </div>
+            </div>
+          </div>
+          </div>
+      </div>
+      <div class="col">
+        <div class="card mb-3 border-0">
+          <div class="row">
+            <div class="col-md-2 text-dark">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M19.63 3.65a1 1 0 0 0-.84-.2a8 8 0 0 1-6.22-1.27a1 1 0 0 0-1.14 0a8 8 0 0 1-6.22 1.27a1 1 0 0 0-.84.2a1 1 0 0 0-.37.78v7.45a9 9 0 0 0 3.77 7.33l3.65 2.6a1 1 0 0 0 1.16 0l3.65-2.6A9 9 0 0 0 20 11.88V4.43a1 1 0 0 0-.37-.78ZM18 11.88a7 7 0 0 1-2.93 5.7L12 19.77l-3.07-2.19A7 7 0 0 1 6 11.88v-6.3a10 10 0 0 0 6-1.39a10 10 0 0 0 6 1.39Zm-4.46-2.29l-2.69 2.7l-.89-.9a1 1 0 0 0-1.42 1.42l1.6 1.6a1 1 0 0 0 1.42 0L15 11a1 1 0 0 0-1.42-1.42Z"/></svg>
+            </div>
+            <div class="col-md-10">
+              <div class="card-body p-0">
+                <h5>100% secure payment</h5>
+                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipi elit.</p>
+              </div>
+            </div>
+          </div>
+          </div>
+      </div>
+      <div class="col">
+        <div class="card mb-3 border-0">
+          <div class="row">
+            <div class="col-md-2 text-dark">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M22 5H2a1 1 0 0 0-1 1v4a3 3 0 0 0 2 2.82V22a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-9.18A3 3 0 0 0 23 10V6a1 1 0 0 0-1-1Zm-7 2h2v3a1 1 0 0 1-2 0Zm-4 0h2v3a1 1 0 0 1-2 0ZM7 7h2v3a1 1 0 0 1-2 0Zm-3 4a1 1 0 0 1-1-1V7h2v3a1 1 0 0 1-1 1Zm10 10h-4v-2a2 2 0 0 1 4 0Zm5 0h-3v-2a4 4 0 0 0-8 0v2H5v-8.18a3.17 3.17 0 0 0 1-.6a3 3 0 0 0 4 0a3 3 0 0 0 4 0a3 3 0 0 0 4 0a3.17 3.17 0 0 0 1 .6Zm2-11a1 1 0 0 1-2 0V7h2ZM4.3 3H20a1 1 0 0 0 0-2H4.3a1 1 0 0 0 0 2Z"/></svg>
+            </div>
+            <div class="col-md-10">
+              <div class="card-body p-0">
+                <h5>Quality guarantee</h5>
+                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipi elit.</p>
+              </div>
+            </div>
+          </div>
+          </div>
+      </div>
+      <div class="col">
+        <div class="card mb-3 border-0">
+          <div class="row">
+            <div class="col-md-2 text-dark">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M12 8.35a3.07 3.07 0 0 0-3.54.53a3 3 0 0 0 0 4.24L11.29 16a1 1 0 0 0 1.42 0l2.83-2.83a3 3 0 0 0 0-4.24A3.07 3.07 0 0 0 12 8.35Zm2.12 3.36L12 13.83l-2.12-2.12a1 1 0 0 1 0-1.42a1 1 0 0 1 1.41 0a1 1 0 0 0 1.42 0a1 1 0 0 1 1.41 0a1 1 0 0 1 0 1.42ZM12 2A10 10 0 0 0 2 12a9.89 9.89 0 0 0 2.26 6.33l-2 2a1 1 0 0 0-.21 1.09A1 1 0 0 0 3 22h9a10 10 0 0 0 0-20Zm0 18H5.41l.93-.93a1 1 0 0 0 0-1.41A8 8 0 1 1 12 20Z"/></svg>
+            </div>
+            <div class="col-md-10">
+              <div class="card-body p-0">
+                <h5>guaranteed savings</h5>
+                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipi elit.</p>
+              </div>
+            </div>
+          </div>
+          </div>
+      </div>
+      <div class="col">
+        <div class="card mb-3 border-0">
+          <div class="row">
+            <div class="col-md-2 text-dark">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M18 7h-.35A3.45 3.45 0 0 0 18 5.5a3.49 3.49 0 0 0-6-2.44A3.49 3.49 0 0 0 6 5.5A3.45 3.45 0 0 0 6.35 7H6a3 3 0 0 0-3 3v2a1 1 0 0 0 1 1h1v6a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3v-6h1a1 1 0 0 0 1-1v-2a3 3 0 0 0-3-3Zm-7 13H8a1 1 0 0 1-1-1v-6h4Zm0-9H5v-1a1 1 0 0 1 1-1h5Zm0-4H9.5A1.5 1.5 0 1 1 11 5.5Zm2-1.5A1.5 1.5 0 1 1 14.5 7H13ZM17 19a1 1 0 0 1-1 1h-3v-7h4Zm2-8h-6V9h5a1 1 0 0 1 1 1Z"/></svg>
+            </div>
+            <div class="col-md-10">
+              <div class="card-body p-0">
+                <h5>Daily offers</h5>
+                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipi elit.</p>
+              </div>
+            </div>
+          </div>
+          </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% include "shop/chatboxAI.html" %}
+
+
+
+{% if user.is_authenticated %}
+    {% include "chatApp/room.html" %}
+{% else %}
+  <div class="fixed-plugin">
+      <!-- Nội dung khác nếu không xác thực -->
+  </div>
+{% endif %}
+
+{% endblock %}

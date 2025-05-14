@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Your custom styles go here */
+        .cart-icon {
+            position: relative;
+            font-size: 30px;
+            display: inline-block;
+        }
+
+        .cart-icon .badge {
+            position: absolute;
+            top: -5px;
+            right: -10px;
+            background-color: red;
+            color: white;
+            border-radius: 50%;
+            padding: 5px 8px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <a href="{% url 'cart_Page' %}">
+        <div class="cart-icon" id="cartIcon">
+            <i class="fas fa-shopping-cart"></i>
+            {% if total_items %}
+                <span class="badge" id="cartBadge">{{ total_items}}</span>
+            {% elif not total_items %}
+                <span class="badge" id="cartBadge">0</span>
+            {% endif %} 
+
+        </div>
+    </a>
+
+    <script src="yourscript.js"></script>
+</body>
+</html>

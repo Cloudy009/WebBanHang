@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+    <df-messenger
+      intent="WELCOME"
+      chat-title="Test_Guru"
+      agent-id="a4a47282-98f1-4a8e-8010-7b91e20c3a5a"
+      language-code="vi"
+    ></df-messenger>
+    <script>
+        // Lưu trữ user_id vào local storage
+        const user = "{{ user_id }}";
+        localStorage.setItem('user_id', user);
+    </script>
+    <script>
+       // Lấy dữ liệu từ localStorage
+        const userId = localStorage.getItem('user_id');  // Không cần phải parse nếu đã lưu trữ như chuỗi
+
+        // Nếu có dữ liệu người dùng, gửi dữ liệu đến Django view khi gửi yêu cầu Dialogflow
+        if (userId) {
+            // Định nghĩa hàm gửi yêu cầu Dialogflow
+            function sendToDialogflow(userId, userMessage) {
+                fetch('/webhook/dialogflow/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        user_id: userId,
+                        message: userMessage
+                    })
+                })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error('Error:', error));
+            }
+
+            // Gửi tin nhắn từ người dùng đến Dialogflow
+            sendToDialogflow(userId, "Tin nhắn của người dùng");
+        }
+    </script>
+</body>
+</html>

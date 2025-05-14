@@ -1,0 +1,407 @@
+{% extends "partion/header_footer.html" %}
+{% block content %}
+{% load static %}
+{% load custom_filters %}
+
+<style>
+#address-suggestions {
+    position: absolute;
+    z-index: 1000;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#address-suggestions .dropdown-item {
+    padding: 10px;
+    cursor: pointer;
+}
+
+#address-suggestions .dropdown-item:hover {
+    background-color: #f0f0f0;
+}
+
+
+</style>
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/CheckOut/check_out.css' %}">
+
+<div class="container">
+    <form method="post" action="{% url 'payment' %}">
+        {% csrf_token %}
+        <div class="row">
+            <!-- Left Column -->
+            <div class="col-md-8">
+                <!-- Billing Info -->
+            <div class="card" id="billing-info">
+                <div class="step-indicator">
+                    <span>1</span>
+                    <h5>Billing Info</h5>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="first_name">First Name</label>
+                            <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Enter name" value="{{ user_profile.first_name }}">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="last_name">Last Name</label>
+                            <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Enter name" value="{{ user_profile.last_name }}">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" value="{{ user_profile.email }}">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="phone">Phone</label>
+                            <input type="text" class="form-control" id="phone" name="phone_number" placeholder="Enter phone number" value="{{ user_profile.phone_number }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group position-relative">
+                    <label for="address">Address</label>
+                    <input 
+                        type="text" 
+                        class="form-control" 
+                        id="address" 
+                        name="address" 
+                        placeholder="Enter full address" 
+                        value="{{ user_profile.address }}" 
+                        oninput="fetchAddressSuggestions(this.value)"
+                    >
+                    <ul id="address-suggestions" class="dropdown-menu" style="display: none;"></ul>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="country">Country</label>
+                            <input type="text" class="form-control" id="country" name="country" placeholder="Enter country" value="{{ user_profile.country }}">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="city">City</label>
+                            <input type="text" class="form-control" id="city" name="city" placeholder="Enter city" value="{{ user_profile.city }}">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="postal-code">Zip / Postal Code</label>
+                            <input type="text" class="form-control" id="postal-code" name="postal_code" placeholder="Enter postal code" value="{{ user_profile.zip }}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+                <!-- Shipping Info -->
+                <div class="card">
+                    <div class="step-indicator">
+                        <span>2</span>
+                        <h5>Shipping Info</h5>
+                    </div>
+                    <div class="form-group">
+                        <label for="saved-address">Select a saved address:</label>
+                        <div class="p-2" id="saved-address">
+                            <!-- Address Option 1 (Replace values with user's saved addresses) -->
+                            <div class="form-check border rounded p-3 mb-2">
+                                <input class="form-check-input" type="radio" name="address" id="address1" value="{{ user_profile.address }}" onclick="toggleBillingInfo(false)">
+                                <label class="form-check-label" for="address1">
+                                    {{ user_profile.address }}, {{ user_profile.city }}, {{ user_profile.country }}
+                                </label>
+                            </div>
+                            <!-- Option to Enter New Address -->
+                            <div class="form-check border rounded p-3 mb-2">
+                                <input class="form-check-input" type="radio" name="new-address" id="new-address" value="new" onclick="toggleBillingInfo(true)">
+                                <label class="form-check-label" for="new-address">
+                                    Enter a new address
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Payment Info -->
+                <div class="card">
+                    <div class="step-indicator">
+                        <span>3</span>
+                        <h5>Payment Info</h5>
+                    </div>
+                    <div class="payment-methods">
+                        <!-- Hidden input field to store selected payment method -->
+                        <input type="hidden" id="payment_method" name="payment_method" value="">
+                
+                        <!-- Payment buttons with onclick to set the hidden field -->
+                        <button type="button" class="btn-outline-dark" onclick="selectPaymentMethod('credit')">
+                            <i class="bx bx-credit-card"></i>
+                            Credit / Debit Card
+                        </button>
+                        <button type="button" class="btn-outline-dark" onclick="selectPaymentMethod('paypal')">
+                            <i class="bx bxl-paypal"></i>
+                            Paypal
+                        </button>
+                        <button type="button" class="btn-outline-dark" onclick="selectPaymentMethod('cod')">
+                            <i class="bx bx-money"></i>
+                            Cash on Delivery
+                        </button>
+                    </div>
+                </div>       
+            </div>
+            <!-- Right Column -->
+            <div class="col-md-4">
+
+                <!-- Submit Voucher Code -->
+                <div class="voucher-summary">
+                    <h5>Voucher</h5>
+                    <div class="input-group mb-3">
+                        <input type="text" 
+                        class="form-control" 
+                        name="voucher_code" 
+                        placeholder="Enter voucher code" 
+                        id="voucher-code" 
+                        value="{% if voucher_code %}{{ voucher_code }}{% endif %}">
+                        <button type="button" class="btn btn-primary" id="apply-voucher">Apply</button>
+                    </div>
+                    <div id="voucher-feedback" style="color: red; display: none;"></div>
+                </div>
+                
+                <!-- Order Summary -->
+                <div class="order-summary">
+                    <h5 class="text-center">Order Summary</h5>
+                    <ul class="list-group">
+                        {% for item in cart_items %}
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between">
+                                <span>{{ item.product.title }} ({{ item.size }})</span>
+                                <span>{{ item.total_price | format_currency }} VND</span>
+                            </div>
+                        </li>
+                        {% endfor %}
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between">
+                                <strong>Sub Total:</strong>
+                                <span class="subtotal">{{ total_amount | format_currency }} VND</span>
+                            </div>
+                        </li>
+                        {% if voucher_code %}
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between">
+                                {% if voucher_code %}
+                                    <div class="d-flex justify-content-between flex-column">
+                                        <strong class="text-nowrap">Voucher Discount:</strong>
+                                        <span class="voucher-code">( {{ voucher_code }} )</span>
+                                    </div>
+                                    <span class="discount text-nowrap">-{{ voucher_discount | format_currency }} VND</span>
+                                {% else %}
+                                    <div class="d-flex justify-content-between flex-column">
+                                        <strong class="text-nowrap">Voucher Discount:</strong>
+                                        <span class="voucher-code">( Không có voucher nào )</span>
+                                    </div>
+                                    <span class="discount text-nowrap">Không có thôngg tin</span>
+                                {% endif %}
+                            </div>
+                        </li>
+                        
+                        {% endif %}
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between">
+                                <strong>Shipping Charge:</strong>
+                                <span>0</span>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between">
+                                <strong>Estimated Tax:</strong>
+                                <span>0</span>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between">
+                                <strong>Total:</strong>
+                                <span class="total">{{ total_after_discount | format_currency }} VND</span>
+                            </div>
+                        </li>
+                    </ul>
+                    <button type="submit" class="btn btn-success mt-3 btn-block">Proceed to Payment</button>
+                </div>    
+            </div>        
+          </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    function toggleBillingInfo(show) {
+        const billingInfo = document.getElementById('billing-info');
+        billingInfo.style.display = show ? 'block' : 'none';
+    }
+</script>
+<script>
+    // JavaScript function to update the hidden input with the selected payment method
+    function selectPaymentMethod(method) {
+        document.getElementById('payment_method').value = method;
+
+        // Optional: Visual feedback to highlight the selected button
+        const buttons = document.querySelectorAll('.payment-methods button');
+        buttons.forEach(button => button.classList.remove('selected'));
+        
+        // Highlight selected button
+        event.target.classList.add('selected');
+    }
+</script>
+<script>
+document.getElementById('apply-voucher').addEventListener('click', function () {
+    const voucherCode = document.getElementById('voucher-code').value.trim();
+    const feedback = document.getElementById('voucher-feedback');
+    if (!voucherCode) {
+        feedback.textContent = 'Vui lòng nhập mã voucher.';
+        feedback.style.display = 'block';
+        return;
+    }
+
+    fetch("{% url 'apply_voucher' %}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({ voucher_code: voucherCode })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            feedback.textContent = `Voucher áp dụng thành công! Giảm giá: -${formatCurrency(data.discount)} VND`;
+            feedback.style.color = 'green';
+            feedback.style.display = 'block';
+
+            // Cập nhật giao diện Order Summary
+            updateOrderSummary(parseFloat(data.discount), data.voucher_code);
+        } else {
+            feedback.textContent = data.message || 'Voucher không hợp lệ.';
+            feedback.style.color = 'red';
+            feedback.style.display = 'block';
+        }
+    })
+    .catch(error => {
+        console.error('Lỗi:', error);
+        feedback.textContent = 'Lỗi khi áp dụng voucher.';
+        feedback.style.color = 'red';
+        feedback.style.display = 'block';
+    });
+});
+
+function updateOrderSummary(discount, voucherCode) {
+    const subtotalElement = document.querySelector('.list-group-item span.subtotal');
+    const totalElement = document.querySelector('.list-group-item span.total');
+    const discountElement = document.querySelector('.list-group-item span.discount');
+    const voucherElement = document.querySelector('.list-group-item span.voucher-code');
+
+    const subtotal = parseFloat(subtotalElement.textContent.replace(/\./g, '').replace(/[^0-9]/g, '')); // Đảm bảo xử lý dấu "." trong số
+    const shipping = 0; // Phí vận chuyển cố định (VND)
+    const tax = 0; // Thuế cố định (VND)
+
+    // Tính toán tổng tiền sau giảm giá
+    const totalAfterDiscount = Math.max(0, subtotal - discount + shipping + tax);
+
+    // Cập nhật lại giao diện
+    if (discountElement) {
+        discountElement.textContent = `-${formatCurrency(discount)} VND`;
+    }
+    if (voucherElement) {
+        voucherElement.textContent = voucherCode;
+    }
+    if (totalElement) {
+        totalElement.textContent = `${formatCurrency(totalAfterDiscount)} VND`;
+    }
+}
+
+// Hàm định dạng tiền tệ
+function formatCurrency(number) {
+    return number.toLocaleString('vi-VN', { minimumFractionDigits: 0 });
+}
+
+
+</script>
+<script>
+    let debounceTimeout;
+
+    async function fetchAddressSuggestions(query) {
+        const suggestionsDropdown = document.getElementById("address-suggestions");
+
+        // Ẩn dropdown nếu chuỗi nhập vào quá ngắn
+        if (query.length < 3) {
+            suggestionsDropdown.style.display = "none";
+            return;
+        }
+
+        clearTimeout(debounceTimeout); // Hủy bỏ timer trước đó
+        debounceTimeout = setTimeout(async () => {
+            // Cấu hình URL API OpenCage
+            const apiKey = "bfe7215d6c5342859e93b45320c10639"; // API Key của bạn
+            const url = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(query)}&key=${apiKey}&language=vi&countrycode=VN&limit=5`;
+
+            try {
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    throw new Error(`Lỗi phản hồi từ API: ${response.status}`);
+                }
+
+                const results = await response.json();
+                suggestionsDropdown.innerHTML = "";
+
+                if (results.results.length > 0) {
+                    results.results.forEach((result) => {
+                        const li = document.createElement("li");
+                        li.classList.add("dropdown-item");
+                        li.textContent = result.formatted;
+                        li.onclick = () => selectAddress(result.formatted);
+                        suggestionsDropdown.appendChild(li);
+                    });
+                    suggestionsDropdown.style.display = "block";
+                } else {
+                    const noResult = document.createElement("li");
+                    noResult.classList.add("dropdown-item", "text-muted");
+                    noResult.textContent = "Không tìm thấy địa chỉ phù hợp.";
+                    suggestionsDropdown.appendChild(noResult);
+                    suggestionsDropdown.style.display = "block";
+                }
+            } catch (error) {
+                console.error("Lỗi khi lấy gợi ý địa chỉ:", error);
+                suggestionsDropdown.innerHTML = "";
+                const errorItem = document.createElement("li");
+                errorItem.classList.add("dropdown-item", "text-danger");
+                errorItem.textContent = "Không thể kết nối tới máy chủ. Vui lòng thử lại.";
+                suggestionsDropdown.appendChild(errorItem);
+                suggestionsDropdown.style.display = "block";
+            }
+        }, 500); // Đợi 1s sau khi người dùng ngừng nhập
+    }
+
+    function selectAddress(address) {
+        const addressInput = document.getElementById("address");
+        const suggestionsDropdown = document.getElementById("address-suggestions");
+
+        addressInput.value = address;
+        suggestionsDropdown.style.display = "none";
+    }
+
+
+
+
+</script>
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+{% endblock %}

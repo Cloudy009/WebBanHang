@@ -1,0 +1,18 @@
+.card-icon{
+    border-radius: 15px;
+    padding: 12px 15px;
+    background-color: rgb(255 251 251) !important;
+    box-shadow: rgb(255 255 255) -2px -2px 8px, rgba(255, 255, 255, 0.5) -2px -2px 12px, rgba(255, 255, 255, 0.1) 2px 2px 4px inset, rgba(0, 0, 0, 0.3) 2px 2px 8px;
+}
+
+.card-design{
+    box-shadow: rgb(255, 255, 255) -2px -2px 8px, 
+                rgba(255, 255, 255, 0.5) -2px -2px 12px, 
+                rgba(255, 255, 255, 0.1) 2px 2px 4px inset, 
+                rgba(0, 0, 0, 0.3) 2px 2px 8px !important;
+    background-color: #ffffff !important;
+}
+
+.recently-orders-table thead{
+    color: rgb(229, 21, 212) !important;
+}

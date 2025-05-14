@@ -1,0 +1,36 @@
+- Mở terminal hoặc PowerShell, sau đó chuyển vào thư mục dự án của bạn và tạo môi trường ảo.
+python -m venv venv_django_mongo
+
+- Kích hoạt môi trường ảo:
++ Trên Windows:     .\venv_django_mongo\Scripts\activate
++ Trên macOS/Linux: source venv_django_mongo/bin/activate
+
+- Tải thư viện  
+pip install -r requirements.txt
+
+- Tạo csdl
++ Tạo một cơ sở dữ liệu mới tên là FandBShop trong MYSQL
++ Sau đó, cấu hình kết nối trong 'settings.py'
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'FandBShop',
+        'USER': 'your_mysql_user',
+        'PASSWORD': 'your_mysql_password',
+        'HOST': 'localhost',
+        'PORT': '3306',
+    }
+}
+
+
+- Tạo người dùng quản trị và chạy các migration
+python manage.py createsuperuser
+< Sau khi chạy lệnh này, bạn sẽ được yêu cầu nhập tên người dùng, email và mật khẩu cho người dùng quản trị >
+
+- Chạy lệnh migrations: Để tạo các bảng cơ sở dữ liệu từ các models của dự án Django, bạn cần chạy lệnh makemigrations và migrate:
+python manage.py makemigrations
+python manage.py migrate
+
+- Khởi động server Django
+python manage.py runserver
+

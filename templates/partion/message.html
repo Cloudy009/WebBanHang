@@ -1,0 +1,43 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/message.css' %}">
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="toasts">
+            {% if message.tags == 'success' %}
+                <div class="toast success">
+                    <i class='bx bxs-check-circle'></i>
+                    <span>{{ message }}</span>
+                    <span class="cutdown"></span>
+                </div>
+            {% elif message.tags == 'warning' %}
+                <div class="toast warning">
+                    <i class='bx bxs-bug'></i>
+                    <span>{{ message }}</span>
+                    <span class="cutdown"></span>
+                </div>
+            {% elif message.tags == 'error' %}
+                <div class="toast error">
+                    <i class='bx bxs-error-circle'></i>
+                    <span>{{ message }}</span>
+                    <span class="cutdown"></span>
+                </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+{% endif %}
+
+<script src="{% static 'js/message.js' %}"></script>
+<script>
+    // Đợi cho trang được tải hoàn toàn trước khi chạy mã JavaScript
+    document.addEventListener("DOMContentLoaded", function() {
+        // Lặp qua tất cả các phần tử có class là 'toast' và hiển thị chúng
+        var toasts = document.querySelectorAll('.toast');
+        toasts.forEach(function(toast) {
+            toast.style.display = 'block';
+            // Thiết lập hành động để ẩn tin nhắn sau một khoảng thời gian
+        });
+    });
+</script>

@@ -1,0 +1,34 @@
+{% extends "base_layout.html" %}
+{% block content %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <strong>{{ title }}</strong>: 
+            <span class="{% if result == 'Thành công' %}text-success{% else %}text-danger{% endif %}">
+                {{ result }}
+            </span>
+        </div>
+        <div class="panel-body">
+            <p><strong>Order ID:</strong> {{ order_id|default:"Không xác định" }}</p>
+            <p><strong>Số tiền:</strong> {{ amount|default:"0" }}</p>
+            <p><strong>Mô tả đơn hàng:</strong> {{ order_desc|default:"Không có mô tả" }}</p>
+            <p><strong>Mã giao dịch:</strong> {{ vnp_TransactionNo|default:"Không có mã giao dịch" }}</p>
+            
+            <p>
+                <strong>Mã phản hồi:</strong> 
+                {{ vnp_ResponseCode|default:"Không xác định" }} 
+                - 
+                {% if vnp_ResponseCode == '00' %}
+                    <span class="text-success">Thành công</span>
+                {% else %}
+                    <span class="text-danger">Lỗi</span>
+                {% endif %}
+            </p>
+            
+            {% if msg %}
+                <p class="alert alert-warning">
+                    <strong>Thông báo:</strong> {{ msg }}
+                </p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

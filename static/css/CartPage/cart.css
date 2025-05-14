@@ -1,0 +1,225 @@
+/* styles.css */
+:root {
+    --body-font           : "Open Sans", sans-serif;
+    --heading-font        : "Nunito", sans-serif;
+    --total-font          : "Cairo", sans-serif;
+    --main-color: #ffbc45;
+    --color-p: rgb(130 130 130);
+}
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f7f7f7;
+}
+
+.cart-container {
+    font-family: var(--total-font);
+    background-color: white;
+    padding: 40px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    font-size: 18px;
+}
+
+#rotate-container {
+    display: inline-block;
+    cursor: pointer;
+  }
+  
+  #rotating-svg {
+    transition: transform 0.3s ease;
+  }
+  
+
+
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.cart-table th, .cart-table td {
+    padding: 20px 0px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    color: black;
+}
+
+.product-info {
+    position: relative;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    object-fit: cover;
+    overflow: hidden;
+}
+.cart-product-image
+{
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    position: relative;
+    margin-right: 30px;
+}
+.cart-product-image img {
+    width: 100%;
+    height: 100%;
+    background-color: #e8fcff;
+}
+
+.quantity-selector {
+    width: 100px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.quantity-btn {
+    padding: 6px 16px;
+    border: none;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 25px;
+}
+
+.quantity-btn:focus {
+    outline: none;
+}
+
+/* .quantity-btn.minus {
+    border-radius: 5px 0 0 5px;
+}
+
+.quantity-btn.plus {
+    border-radius: 0 5px 5px 0;
+} */
+
+input[type="number"] {
+    width: 70px;
+    text-align: center;
+    border: none;
+    padding: 11px;
+    font-size: 15px;
+    background-color: rgb(253 253 253);
+}
+
+.item-delete {
+    text-align: right !important;
+}
+
+.remove-btn {
+    background: none;
+    border: none;
+    color: #fa5555;
+    cursor: pointer;
+    font-size: 40px;
+}
+
+.cart-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.btn {
+    padding: 15px 25px;
+    background-color: #333;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight:900;
+    font-size: 11px;
+}
+
+.btn.continue-shopping {
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+.cart-summary {
+    display: flex;
+    justify-content: space-between;
+}
+
+.btn > .apply-coupon
+{
+    background-color:#6f6f6f;
+}
+
+.coupon, .cart-page-total {
+    width: 40%;
+}
+
+.cart-page-total {
+    background-color: #f0f0f0;
+    padding: 30px;
+    border-radius: 5px;
+}
+
+.cart-page-total h3, .coupon h3 {
+    margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: 900;
+    line-height: 10px;
+}
+
+.subtotal, .total {
+    font-weight: bold;
+    color: #ff0000;
+}
+
+
+.total-table {
+    width: 100%; /* Đặt chiều rộng tối đa của div chứa bảng */
+    font-size: 18px; /* Kích thước chữ mặc định */
+    font-weight: 900; /* Độ đậm của chữ */
+}
+
+
+.total-table table {
+    width: 100%; /* Đặt bảng chiếm toàn bộ chiều rộng của div chứa */
+    border-collapse: collapse; /* Loại bỏ khoảng trống giữa các ô trong bảng */
+}
+
+.total-table td {
+    padding: 20px 0px; /* Khoảng cách bên trong các ô */
+    text-align: left; /* Căn chỉnh văn bản ở bên trái */
+}
+
+.total-table .value {
+    text-align: right; /* Căn chỉnh giá trị ở bên phải */
+    font-weight: 900; /* Độ đậm của chữ */
+}
+
+.cart-page-total tr:not(:last-child) {
+    border-bottom: 1px solid #ccc; /* Đường viền dưới cho tất cả các hàng trừ hàng cuối cùng */
+}
+
+.btn.checkout {
+    background-color: #60b846;
+    width: 100%;
+}
+
+.coupon-container {
+    display: flex;
+}
+
+
+
+input[type="text"] {
+    width: calc(100% - 300px);
+    padding: 10px;
+    margin-right: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}

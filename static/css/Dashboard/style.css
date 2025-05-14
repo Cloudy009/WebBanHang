@@ -1,0 +1,7 @@
+/* Định nghĩa màu sắc mặc định */  
+  /* Khi mục điều hướng được chọn */
+  .nav-link.active {
+    color: #007bff !important; /* Màu chữ khi được chọn là màu xanh dương */
+    transition: all 0.05s linear !important; /* Hiệu ứng chuyển màu chữ trong 0.3s */
+  }
+ 

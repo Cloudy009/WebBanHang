@@ -1,0 +1,96 @@
+{% extends "shop/base_Page.html" %}
+
+{% block content %}
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+        .customer-info {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 51px;
+            max-width: 500px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .customer-info .text-center
+        {
+            display: inline;
+        }
+        .mx-auto
+        {
+            display: contents;
+        }
+    </style>
+</head>
+<body>
+
+    {% if messages  %}
+        {% include "partion/message.html" %}
+    {% endif %}
+    
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 mx-auto">
+                <div class="account_container">
+                    <div class="customer-info">
+                    <h1 class="text-center">Thông tin khách hàng</h1>
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <th scope="row">Tên:</th>
+                                <td>{{ user.username }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Email:</th>
+                                <td>{{ user.email }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="text-center">
+                        <a href="{% url 'logOut' %}" class="btn btn-primary">Đăng xuất</a>
+                    </div>  
+
+                    {% if auth_provider == 'google' or auth_provider == 'github' %}
+                        <!-- Không hiển thị nút Cập Nhật nếu đăng nhập bằng Google hoặc GitHub -->
+                    {% else %}
+                        <div class="text-center">
+                            <a href="{% url 'capNhat' %}" class="btn btn-primary">Cập Nhật</a>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="hoadon_container">
+                    {% for detail in details %}
+                    <div class="customer-info" data-product-id="{{detail.product}}">
+                        <h1 class="text-center"></h1>
+                        <table class="table table-bordered">
+                            <tbody>
+                            <tr>
+                                <th scope="row">Tên sản phẩm:</th>
+                                <td>{{ detail.product.title }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Giá sản phẩm:</th>
+                                <td>{{ detail.product.price|floatformat:"-3g" }} VNĐ</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Ảnh sản phẩm:</th>
+                                <td><img src="{{ detail.product.image_pro }}" style="width:100px; height: 100px; "alt=""></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div class="text-center">
+                            <a href="{% url 'product_review' product_id=detail.product.pro_id hoadon_id=detail.hoaDon.maHoaDon %}" class="btn btn-primary">
+                                Review
+                            </a>                    
+                        </div>
+                    </div> 
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>    
+</body>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/model.css' %}">
+<div class= "modal_container " onload="openModal()">
+     {% comment %} <button class="open_modal" onclick="openModal()" >Open Modal</button> {% endcomment %}
+     <div id="diaChi" class="modal ">
+        <div class="modal_inner">
+            <div class="modal_header">
+                <p >Welcome to my website</p>
+                <i class="fas"></i>
+            </div>
+            <div class="modal_body">
+                <h3>Hope you are well !</h3>
+                <p>Click vào "Close" để thoát khỏi Modal</p>
+            </div>
+            <div class="modal_footer">
+                <button onclick="closeModal()" >Close</button>
+            </div>
+        </div>
+     </div>
+<script src="{% static 'js/model.js' %}"></script>
+</div>

@@ -1,0 +1,21 @@
+.suggestions_search {
+    max-height: 200px;
+    overflow-y: auto;
+    position: absolute;
+    background-color: #ffffff;
+    z-index: 1000;
+    width: 200px;
+    margin-top: 10px;
+}
+.suggestion-item {
+    padding: 10px;
+    cursor: pointer;
+}
+.suggestion-item.active {
+    background-color: #f0f0f0;
+}
+
+.highlight {
+    background-color: #03f966;
+    color: white;
+}

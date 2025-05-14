@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tìm kiếm sản phẩm</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        #suggestions {
+            border: 1px solid #ccc;
+            max-height: 150px;
+            overflow-y: auto;
+            display: none;
+            position: absolute;
+            background-color: white;
+            z-index: 1000;
+            width: 200px;
+        }
+        .suggestion-item {
+            padding: 10px;
+            cursor: pointer;
+        }
+        .suggestion-item.active {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tìm kiếm sản phẩm</h1>
+
+    <!-- Ô tìm kiếm sản phẩm -->
+    <input type="text" id="search-input" placeholder="Tìm kiếm sản phẩm">
+    <div id="suggestions"></div> <!-- Dropdown suggestions -->
+
+    <!-- Danh sách sản phẩm ban đầu -->
+    <!-- <ul id="product-list">
+        {% for product in products %}
+            <li>{{ product.title }}</li>
+        {% empty %}
+            <li>Không có sản phẩm nào.</li>
+        {% endfor %}
+    </ul> -->
+
+    <script>
+        $(document).ready(function() {
+            var selectedSuggestionIndex = -1; // Chỉ số gợi ý hiện tại được chọn
+
+            // Xử lý sự kiện khi nhập từ khóa
+            $('#search-input').on('input', function() {
+                var query = $(this).val();
+                if (query.length > 2) { // Chỉ tìm kiếm khi từ khóa có hơn 2 ký tự
+                    $.ajax({
+                        url: '/shop/search_products/', // Đường dẫn tới view tìm kiếm
+                        type: 'GET',
+                        data: { 'search': query },
+                        success: function(data) {
+                            $('#suggestions').empty().show(); // Hiển thị danh sách gợi ý
+                            $('#product-list').empty(); // Xóa danh sách sản phẩm hiện tại
+                            selectedSuggestionIndex = -1; // Đặt lại chỉ số gợi ý
+
+                            if (data.length > 0) {
+                                // Thêm các sản phẩm vào danh sách gợi ý
+                                data.forEach(function(product) {
+                                    $('#suggestions').append('<div class="suggestion-item" data-title="' + product.title + '">' + product.title + '</div>');
+                                    $('#product-list').append('<li>' + product.title + '</li>');
+                                });
+                            } else {
+                                $('#suggestions').append('<div class="suggestion-item">Không có sản phẩm nào phù hợp.</div>');
+                                $('#product-list').append('<li>Không có sản phẩm nào phù hợp.</li>');
+                            }
+                        }
+                    });
+                } else {
+                    $('#suggestions').empty().hide(); // Ẩn danh sách gợi ý nếu từ khóa quá ngắn
+                    // Khôi phục danh sách sản phẩm ban đầu hoặc giữ nguyên danh sách cũ
+                }
+            });
+
+            // Xử lý sự kiện bàn phím cho ô tìm kiếm
+            $('#search-input').on('keydown', function(e) {
+                var suggestions = $('#suggestions .suggestion-item');
+                if (e.key === "ArrowDown") {
+                    // Di chuyển xuống
+                    if (selectedSuggestionIndex < suggestions.length - 1) {
+                        selectedSuggestionIndex++;
+                        updateSuggestionHighlight(suggestions);
+                    }
+                    e.preventDefault(); // Ngăn chặn hành động mặc định của phím
+                } else if (e.key === "ArrowUp") {
+                    // Di chuyển lên
+                    if (selectedSuggestionIndex > 0) {
+                        selectedSuggestionIndex--;
+                        updateSuggestionHighlight(suggestions);
+                    }
+                    e.preventDefault(); // Ngăn chặn hành động mặc định của phím
+                } else if (e.key === "Enter") {
+                    // Chọn gợi ý được đánh dấu và thực hiện tìm kiếm
+                    if (selectedSuggestionIndex >= 0 && selectedSuggestionIndex < suggestions.length) {
+                        var selectedText = $(suggestions[selectedSuggestionIndex]).text();
+                        $('#search-input').val(selectedText);
+                        $('#suggestions').empty().hide(); // Ẩn gợi ý
+                        performSearch(selectedText); // Gọi hàm tìm kiếm
+                    }
+                    e.preventDefault(); // Ngăn chặn hành động mặc định của phím
+                }
+            });
+
+                // Xử lý sự kiện khi chọn một gợi ý
+                $('#suggestions').on('click', '.suggestion-item', function() {
+                    var productTitle = $(this).data('title');  // Lấy tên sản phẩm thay vì slug
+                    if (productTitle) {
+                            window.location.href = '/shop/product_detail/' + encodeURIComponent(productTitle);  // Chuyển hướng đến trang chi tiết sản phẩm với tên sản phẩm
+                    } else {
+                        console.log('Product title not found');
+                    }
+                });
+
+
+    // Cập nhật đánh dấu gợi ý
+    function updateSuggestionHighlight(suggestions) {
+        suggestions.removeClass('active');
+        $(suggestions[selectedSuggestionIndex]).addClass('active');
+    }
+
+    // Thực hiện tìm kiếm khi chọn gợi ý
+    function performSearch(query) {
+        // Thêm logic tìm kiếm hoặc chuyển hướng đến trang chi tiết sản phẩm với query
+        window.location.href = '/shop/product_detail/' + encodeURIComponent(query);
+    }
+            // // Xử lý sự kiện khi chọn một gợi ý
+            // $('#suggestions').on('click', '.suggestion-item', function() {
+            //     $('#search-input').val($(this).text());
+            //     $('#suggestions').empty().hide(); // Ẩn danh sách gợi ý khi chọn xong
+            //     performSearch($(this).text()); // Thực hiện tìm kiếm
+            // });
+
+            // // Cập nhật đánh dấu gợi ý
+            // function updateSuggestionHighlight(suggestions) {
+            //     suggestions.removeClass('active');
+            //     $(suggestions[selectedSuggestionIndex]).addClass('active');
+            // }
+
+            // // Thực hiện tìm kiếm khi chọn gợi ý
+            // function performSearch(query) {
+            //     // Thêm logic tìm kiếm hoặc chuyển hướng đến trang tìm kiếm với query
+            //     console.log('Tìm kiếm với từ khóa:', query);
+            //     // Ví dụ: chuyển hướng
+            //     window.location.href = '/shop/search_products/?search=' + encodeURIComponent(query);
+            // }
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,498 @@
+    {% load static %}
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Danh sách sản phẩm</title>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+        <script src="https://kit.fontawesome.com/8f8e6e4c9f.js" crossorigin="anonymous"></script>
+        <link href="{% static 'css/ProductPage/product_item.css' %}" rel="stylesheet" />
+        <link href="{% static 'css/ProductPage/product_page.css' %}" rel="stylesheet" />
+        <link href="{% static 'css/ProductPage/range.css' %}" rel="stylesheet" />
+        <link href="{% static 'css/ProductPage/search_form.css' %}" rel="stylesheet" />
+
+        <style>
+            .page-number.active {
+                font-weight: bold;
+                background-color: #007bff;
+                color: white;
+                border: 1px solid #007bff;
+            }
+            .category-list, .price-range {
+                list-style: none;
+                padding: 0;
+            }
+            .category-item {
+                cursor: pointer;
+                margin-bottom: 5px;
+            }
+            .category-item.active {
+                font-weight: bold;
+                color: #007bff;
+            }
+            .subcategory-list {
+                display: none;
+                list-style: none;
+                padding-left: 20px;
+            }
+            #price-filter {
+                margin: 20px auto;
+                width: 90%;
+                max-width: 600px;
+                background: #fff;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                padding: 20px;
+            }
+            #price-filter h3 {
+                margin: 0 0 15px;
+                color: #007bff;
+                font-size: 1.25em;
+            }
+            .price-range {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .price-range div {
+                margin-bottom: 15px;
+                font-size: 1em;
+                color: #333;
+            }
+            #price-slider {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            #min-price, #max-price {
+                font-weight: bold;
+                color: #007bff;
+            }
+            
+            #filter-btn:hover {
+                background-color: #0056b3;
+            }
+
+            #filter-btn, #reset-btn {
+                background-color: #007bff;
+                color: #fff;
+                border: 50px;
+                padding: 10px 20px;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+                margin: 5px;
+            }
+            #filter-btn.active {
+                background-color: #0056b3;
+                font-weight: bold;
+            }
+            #filter-btn:hover, #reset-btn:hover {
+                background-color: #0056b3;
+            }
+            #reset-btn {
+                display: none; /* Ẩn nút xóa bộ lọc theo mặc định */
+            }
+            .product-card-link {
+                text-decoration: none; /* Loại bỏ gạch chân */
+                color: inherit; /* Sử dụng màu mặc định của nội dung bên trong */
+                display: inherit; /* Để kế thừa cách hiển thị từ bên trong */
+                margin: 0; /* Xóa margin */
+                padding: 0; /* Xóa padding */
+            }
+
+            
+            
+        </style>
+    </head>
+    <body>
+        <div class="shopping-container">
+            <main>
+                <div class="container">
+                    <aside class="sidebar">
+                        <!-- Search bar -->
+                        <div class="search_group">
+                            <div class="main-logo">
+                                <a href="{% url 'homePage' %}">
+                                  <img src="{% static 'images/logo2.png' %}" alt="logo" class="img-fluid">
+                                </a>
+                              </div>
+                            
+                        </div>
+
+                        <div id="category-filter" class="filter-type">
+                            <div class="pointer-container">
+                                <div id="pointer">
+                                    <div id="pointer-small">
+                                        <h3>Categories</h3>
+                                    </div>
+                                </div>  
+                                <div id="triangle-topright"></div>   
+                            </div>       
+                            <ul class="category-list">
+                                <li class="category-item" data-category="">
+                                    <span class="expand-toggle">+</span>Tất cả</li>
+                                {% for category in categories %}
+                                    <li class="category-item" data-category="{{ category.cate_id }}">
+                                        <span class="expand-toggle">+</span> {{ category.name }}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        <!-- Tags -->
+                        <div class="filter-type tags">
+                            <div class="pointer-container">
+                                <div id="pointer">
+                                    <div id="pointer-small">
+                                        <h3>Tags</h3>
+                                    </div>
+                                </div>  
+                                <div id="triangle-topright"></div>   
+                            </div>
+                            <ul>
+                                <li><a href="#">White</a></li>
+                                <li><a href="#">Cheap</a></li>
+                                <li><a href="#">Mobile</a></li>
+                                <li><a href="#">Modern</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Brands -->
+                        <div class="filter-type brands">
+                            <div class="pointer-container">
+                                <div id="pointer">
+                                    <div id="pointer-small">
+                                        <h3>Brands</h3>
+                                    </div>
+                                </div>  
+                                <div id="triangle-topright"></div>   
+                            </div>
+                            <ul>
+                                <li><a href="#">Apple</a></li>
+                                <li><a href="#">Samsung</a></li>
+                                <li><a href="#">Huwai</a></li>
+                            </ul>
+                        </div>
+
+                        <div id="filter-type price-filter">
+                            <h3>Khoảng giá</h3>
+                            <div class="pointer-container">
+                                <div id="pointer">
+                                    <div id="pointer-small">
+                                        <h3>Filter By Price</h3>
+                                    </div>
+                                </div>  
+                                <div id="triangle-topright"></div>   
+                            </div>
+                            <div class="price-range">
+                                <div id="price-slider"></div>
+                                <div>
+                                    <span>Giá từ: </span><span id="min-price">0</span>
+                                    <span> - Giá đến: </span><span id="max-price">100000</span>
+                                </div>
+                                <button id="filter-btn">Lọc</button>
+                                <button id="reset-btn">Xóa bộ lọc</button>
+                            </div>
+                        </div>
+                    </aside>
+                    <section class="shopping-listing">
+                        <div class="options-bar">
+                            <div class="view-options">
+                            
+                               
+                                <!-- <span>Showing 1–9 of 55 results</span> -->
+                            </div>
+                            <div id="sort-options">
+                                
+                            </div>
+                        </div>
+
+                      
+
+                        <div class="product-grid" id="product-grid">
+                            
+                        </div>
+                        
+
+                        <div class="pagination">
+                            <div id="product-summary">
+                                <p>Tổng số sản phẩm: <span id="total-product-count">{{ product_count }}</span></p>
+                                <p>Hiển thị sản phẩm từ <span id="start-product">1</span> đến <span id="end-product">12</span></p>
+                            </div>
+                            <div class="number-pagination">
+                                {% if page_obj.has_previous %}
+                                    <button id="prev" data-page="{{ page_obj.previous_page_number }}">Trước</button>
+                                {% else %}
+                                    <button id="prev" data-page="1" disabled>Trước</button>
+                                {% endif %}
+                                
+                                <div id="pagination-controls">
+                                    
+                                    {% if page_obj.paginator.num_pages > 1 %}
+                                        <div class="page-numbers">
+                                            {% for i in page_obj.paginator.page_range %}
+                                                <button class="page-number {% if i == page_obj.number %}active{% endif %}" data-page="{{ i }}">{{ i }}</button>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                {% if page_obj.has_next %}
+                                    <button id="next" data-page="{{ page_obj.next_page_number }}">Tiếp theo</button>
+                                {% else %}
+                                    <button id="next" data-page="{{ page_obj.number }}" disabled>Tiếp theo</button>
+                                {% endif %}
+                            </div>
+
+                            <span class="current-page">Trang {{ page_obj.number }} của {{ page_obj.paginator.num_pages }}</span>
+
+                            
+                            <div id="pagination-controls">
+                            {% if page_obj.paginator.num_pages > 1 %}
+                        
+                                <input type="number" id="page-input" placeholder="Nhập số trang" min="1" max="{{ page_obj.paginator.num_pages }}">
+                                <button id="go-to-page">Đi</button>
+                            {% endif %}
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </main>
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() 
+            {
+                var likeButton = document.getElementById('like-button');
+
+                likeButton.addEventListener('click', function() 
+                {
+                    var productId = this.getAttribute('data-product-id');
+                    var csrftoken = getCookie('csrftoken'); // Hàm getCookie đã có
+
+                    fetch('/shop/like/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrftoken
+                        },
+                        body: JSON.stringify({ product_id: productId })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.liked) {
+                            likeButton.innerHTML = '<i class="fa-solid fa-heart"></i>';
+                            likeButton.classList.add('liked');
+                        } else {
+                            likeButton.innerHTML = '<i class="fa-regular fa-heart"></i>';
+                            likeButton.classList.remove('liked');
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+                });
+            });
+        // Hàm để lấy CSRF token từ cookie
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        </script>
+        <script>
+            $(document).ready(function() {
+                var $nextBtn = $('#next');
+                var $prevBtn = $('#prev');
+                var $pageInput = $('#page-input');
+                var $currentPage = $('.current-page');
+                var $totalProductCount = $('#total-product-count');
+                var $startProduct = $('#start-product');
+                var $endProduct = $('#end-product');
+                var $paginationControls = $('#pagination-controls');
+                var $minPrice = $('#min-price');
+                var $maxPrice = $('#max-price');
+                var $priceSlider = $('#price-slider');
+                var $resetBtn = $('#reset-btn');
+                var $filterbtn = $('#filter-btn');
+                var $sortSelect = $('#sort-select');
+
+
+                // Khởi tạo thanh trượt giá
+                $priceSlider.slider({
+                    range: true,
+                    min: 0,
+                    max: 100000,
+                    values: [0, 100000],
+                    slide: function(event, ui) {
+                        $minPrice.text(ui.values[0]);
+                        $maxPrice.text(ui.values[1]);
+                    }
+                });
+
+                function updatePageNumbers(currentPage, totalPages) {
+                    var $pageNumbersDiv = $paginationControls.find('.page-numbers');
+                    $pageNumbersDiv.remove();
+                    $paginationControls.prepend('<div class="page-numbers"></div>');
+                    $pageNumbersDiv = $paginationControls.find('.page-numbers');
+                
+                    var startPage = Math.max(currentPage - 4, 1); // Start page, 5 pages before the current page (with a minimum of 1)
+                    var endPage = Math.min(currentPage + 5, totalPages); // End page, 5 pages after the current page (with a maximum of totalPages)
+                
+                    // If the total pages are less than 10, adjust the start and end pages accordingly
+                    if (endPage - startPage < 9) {
+                        if (startPage > 1) {
+                            startPage = Math.max(endPage - 9, 1);
+                        } else {
+                            endPage = Math.min(startPage + 9, totalPages);
+                        }
+                    }
+                
+                    // Append the page numbers within the calculated range
+                    for (var i = startPage; i <= endPage; i++) {
+                        var activeClass = (i === currentPage) ? 'active' : '';
+                        $pageNumbersDiv.append(`<button class="page-number ${activeClass}" data-page="${i}">${i}</button>`);
+                    }
+                
+                    // Handle page number clicks
+                    $('.page-number').click(function() {
+                        var page = $(this).data('page');
+                        loadProducts(page, $('#category-filter .category-item.active').data('category'), $priceSlider.slider('values', 0), $priceSlider.slider('values', 1));
+                    });
+                
+                    $pageInput.attr('max', totalPages);
+                }
+                
+            
+                function loadProducts(page, category = null, minPrice = 0, maxPrice = 100000, sort = '') 
+                {
+                    var url = '?page=' + page;
+                    if (category) {
+                        url += '&category=' + category;
+                    }
+                    url += '&min_price=' + minPrice + '&max_price=' + maxPrice;
+                    if (sort) 
+                    {
+                        url += '&sort=' + sort;
+                    }
+                    
+                    $.ajax({
+                        url: url,
+                        type: 'GET',
+                        success: function(data) {
+                            $('#product-grid').empty();
+                            $.each(data.products, function(index, product) {
+                                $('#product-grid').append(`
+                                    <div class="related-product-item">
+                                        <div class="related-product-image">
+                                            <img src="${product.image}" alt="${product.title}">
+                                            <button class="wishlist-btn {% if user_has_liked %}liked{% endif %}" id="like-button" data-product-id="${ product.id }">
+                                                <i class="fa-regular fa-heart"></i>
+                                            </button>
+                                        </div>
+                                        <div class="related-product-info">
+                                            <h3>${product.title}</h3>
+                                            <span class="rating">${product.unit} <i class="fa-solid fa-star"></i> ${product.rating}</span>
+                                            <span class="price">${product.price} VND</span>
+                                            <div class="related-product-actions">
+                                                <a href="${product.detail_url}" class="product-card-link">
+                                                    <button class="add-to-cart-btn">Detail</button>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `);
+                            });
+
+                            $nextBtn.data('page', parseInt(data.page_number) + 1).prop('disabled', !data.has_next);
+                            $prevBtn.data('page', parseInt(data.page_number) - 1).prop('disabled', data.page_number === 1);
+                            $currentPage.text('Trang ' + data.page_number + ' của ' + data.total_pages);
+                            $totalProductCount.text(data.product_count);
+
+                            // Cập nhật phạm vi sản phẩm
+                            var start = (data.page_number - 1) * 12 + 1;
+                            var end = start + data.products.length - 1;
+                            $startProduct.text(start);
+                            $endProduct.text(end);
+
+                            updatePageNumbers(data.page_number, data.total_pages);
+                        }
+                    });
+                }
+
+                        // Trigger sorting when the user selects a sorting option
+                $sortSelect.change(function() {
+                    var sortValue = $(this).val();  // Get the selected sorting option
+                    var category = $categoryFilter.find('.category-item.active').data('category');  // Get selected category
+                    var minPrice = $priceSlider.slider('values', 0);  // Get min price from slider
+                    var maxPrice = $priceSlider.slider('values', 1);  // Get max price from slider
+                    
+                    // Load products with the new sorting value
+                    loadProducts(1, category, minPrice, maxPrice, sortValue);
+                });
+
+                $('#filter-btn').click(function() {
+                    var category = $('#category-filter .category-item.active').data('category');
+                    var minPrice = $priceSlider.slider('values', 0);
+                    var maxPrice = $priceSlider.slider('values', 1);
+                    loadProducts(1, category, minPrice, maxPrice);
+                    $('#reset-btn').show();
+                });
+
+                $('#reset-btn').click(function() {
+                    var category = $('#category-filter .category-item.active').data('category');
+                    $priceSlider.slider('values', [0, 100000]);
+                    $minPrice.text('0');
+                    $maxPrice.text('100000');
+                    $('#page-input').val('');
+                    var minPrice = $priceSlider.slider('values', 0);
+                    var maxPrice = $priceSlider.slider('values', 1);
+                    loadProducts(1, category, minPrice, maxPrice);
+                    $('#reset-btn').hide(); // Ẩn nút xóa bộ lọc
+                });
+
+                $('#prev').click(function() {
+                    var page = $(this).data('page');
+                    loadProducts(page, $('#category-filter .category-item.active').data('category'), $priceSlider.slider('values', 0), $priceSlider.slider('values', 1));
+                });
+
+                $('#next').click(function() {
+                    var page = $(this).data('page');
+                    loadProducts(page, $('#category-filter .category-item.active').data('category'), $priceSlider.slider('values', 0), $priceSlider.slider('values', 1));
+                });
+
+                $('#go-to-page').click(function() {
+                    var page = parseInt($pageInput.val());
+                    if (!isNaN(page) && page > 0 && page <= $pageInput.attr('max')) {
+                        loadProducts(page, $('#category-filter .category-item.active').data('category'), $priceSlider.slider('values', 0), $priceSlider.slider('values', 1));
+                    }
+                });
+
+                $('#category-filter .category-item').click(function() {
+                    $('#category-filter .category-item').removeClass('active');
+                    $(this).addClass('active');
+                    loadProducts(1, $(this).data('category'), $priceSlider.slider('values', 0), $priceSlider.slider('values', 1));
+                });
+
+                $('#category-filter .expand-toggle').click(function() {
+                    $(this).text($(this).text() === '+' ? '-' : '+');
+                    $(this).siblings('.subcategory-list').toggle();
+                });
+
+                // Khởi tạo với trang đầu tiên
+                loadProducts(1);
+            });
+        </script>
+       
+    </body>
+    </html>

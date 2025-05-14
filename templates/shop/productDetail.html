@@ -1,0 +1,759 @@
+{% extends "partion/header_footer.html" %}
+
+{% block content %}
+{% load static %}
+
+    <script src="https://kit.fontawesome.com/8f8e6e4c9f.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static '/css/ProductDetail/product_detail.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
+    <div class="product-page">
+        <!-- Product Image and Details -->
+        <div class="product-details">
+
+            <!-- Product Image -->
+            <div class="product-image">
+                <!-- Ảnh chính -->
+                {% if product_images %}
+                    <img id="main-image" src="{{ product_images.0.image|default_if_none:'#' }}" alt="{{ product.title }}">
+                {% else %}
+                    <img id="main-image" src="{% static 'images/default-product-image.jpg' %}" alt="{{ product.title }}">
+                {% endif %}
+
+                <!-- Ảnh nhỏ -->
+                <div class="carousel-wrapper">
+                    <button class="carousel-btn" onclick="moveCarousel(-1)">❮</button>
+                  
+                    <div class="carousel-container">
+                        <div class="thumbnail-images" id="carouselTrack">
+                        {% for img in product_images %}
+                            <img class="thumbnail" src="{{ img.image }}" alt="Thumbnail {{ forloop.counter }}">
+                        {% endfor %}
+                        </div>
+                        
+                    </div>
+                  
+                    <button class="carousel-btn" onclick="moveCarousel(1)">❯</button>
+                </div>
+                <!-- <div class="thumbnail-images">
+                    {% for img in product_images %}
+                        <img class="thumbnail" src="{{ img.image }}" alt="Thumbnail {{ forloop.counter }}">
+                    {% endfor %}
+                </div> -->
+            </div>
+
+
+            <!-- Product Info -->
+            <div class="product-main-info">
+                <span class="product-name">{{product.title}}</span>
+                <div class="like-button">
+                    <button id="like-button" data-product-id="{{ product.pro_id }}" class="{% if user_has_liked %}liked{% endif %}">
+                        {% if user_has_liked %} Unlike {% else %} Like {% endif %}
+                    </button>
+                </div>
+                <div class="rating">
+                    <i class="icon fa-solid fa-star"></i>
+                    {% if average_rating %}
+                        <span>{{ average_rating }}/5</span>
+                    {% else %}
+                        <span>No ratings yet</span>
+                    {% endif %}
+                </div>
+                <div class="price">
+                    {% if product.original_price %}
+                        <span><del>{{product.original_price}}</del></span>
+                    {% else %}
+                        <span>NO PRICE</span>
+                    {% endif %}
+                </div> 
+                {% if product.description %}
+                    <p>{{ product.description }}</p>
+                {% else %}
+                    <p>
+                        No description available.
+                    </p>
+                {% endif %}
+                <div class="product-options">
+                    <!-- Phần chọn kích cỡ -->
+                    <div class="select-size">
+                        <label for="product-size">Chọn kích cỡ:</label>
+                        <div id="size-list">
+                            {% for size_option in product.productsize_set.all %}
+                                <div class="size-item {% if forloop.first %}selected{% endif %}" data-value="{{ size_option.size }}">
+                                    <div class="size-label">{{ size_option.get_size_display }}</div>
+                                    <div class="size-price">{{ size_option.price|floatformat:"-3g" }} VNĐ</div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                
+                    <!-- Phần tùy chỉnh -->
+                    <div class="customization">
+                        <label>Tùy chọn:</label>
+                        <div class="custom-options">
+                            <!-- Đường -->
+                            <div class="custom-item" data-type="sugar" data-value="normal">
+                                <span>Đường:</span>
+                                <div class="option" data-value="low">Ít</div>
+                                <div class="option selected" data-value="normal">Bình thường</div>
+                                <div class="option" data-value="high">Nhiều</div>
+                            </div>
+                
+                            <!-- Trà -->
+                            <div class="custom-item" data-type="tea" data-value="normal">
+                                <span>Trà:</span>
+                                <div class="option" data-value="low">Ít</div>
+                                <div class="option selected" data-value="normal">Bình thường</div>
+                                <div class="option" data-value="high">Nhiều</div>
+                            </div>
+                
+                            <!-- Đá -->
+                            <div class="custom-item" data-type="ice" data-value="normal">
+                                <span>Đá:</span>
+                                <div class="option" data-value="low">Ít</div>
+                                <div class="option selected" data-value="normal">Bình thường</div>
+                                <div class="option" data-value="high">Nhiều</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                
+                
+                {% if product.stock %}
+                    <div class="stock-info">Stock: {{product.stock}}</div>
+                {% else %}
+                    <div class="stock-info">Stock: No Information</div>
+                {% endif %}
+                <div class="quantity-cart">
+                    <form method="post" action="{% url 'add_to_cart' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="product_id" value="{{ product.pro_id }}">
+                        <input type="hidden" name="size" id="selected_size">
+                        
+                        <!-- Trường số lượng với name -->
+                        <input type="number" name="quantity" min="1" value="1" class="quantity-input">
+                        
+                        <!-- Thêm các tùy chọn -->
+                        <input type="hidden" name="sugar" value="{{ selected_sugar }}">
+                        <input type="hidden" name="tea" value="{{ selected_tea }}">
+                        <input type="hidden" name="ice" value="{{ selected_ice }}">
+                        
+                        <div class="action">
+                            <button type="submit" class="buy--btn add-to-cart-btn">Add Cart</button>
+                        </div>
+                    </form>
+                    
+                    
+                </div>
+                
+                <div class="product-meta">
+                    <span><strong>SKU:</strong> 1233</span>
+                    <span><strong>Category:</strong> <a href="{% url 'product_page_by_category' product.category.cate_id %}">{{product.category.name}}</a></span>
+                    <!-- <span><strong>Tags:</strong> <a href="#">Classic</a>, <a href="#">Modern</a></span> -->
+                </div>
+            </div>
+        </div>
+        <div class="product-Additional-info">
+            <div class="product-tabs">
+                <button class="tab-button active" onclick="openTab(event, 'description')">DESCRIPTION</button>
+                <button class="tab-button" onclick="openTab(event, 'information')">ADDITIONAL INFORMATION</button>
+                <button class="tab-button" onclick="openTab(event, 'reviews')">REVIEWS</button>
+            </div>
+        </div>
+        <div class="content">
+            <div id="description" class="tab-content active">
+                <h3>Product Description</h3>
+                <p>Foodmart is an eCommerce website template for any grocery store by TemplatesJungle. It is suitable for any eCommerce store, online shopping website, tech store, shopping mart website, online shopping cart, mobile store, gadgets store, electric store, mini store, food mart, etc.</p>
+                <ul>
+                    <li>Donec nec justo eget felis facilisis fermentum.</li>
+                    <li>Suspenside ultra viverra non, semper suscipit pede.</li>
+                    <li>Aliquam porttitor mauris sit amet orci.</li>
+                </ul>
+            </div>
+            
+            <div id="information" class="tab-content">
+                <h3>Additional Information</h3>
+                <p>Here is some additional information about the product...</p>
+            </div>
+            
+            <div id="reviews" class="tab-content">
+                <h3>Reviews</h3>
+                <p>
+                    <div class="review-filter">
+                        <select id="reviewFilter">
+                            <option value="" selected>Chọn số sao</option>
+                            <option value="5">5 sao</option>
+                            <option value="4">4 sao</option>
+                            <option value="3">3 sao</option>
+                            <option value="2">2 sao</option>
+                            <option value="1">1 sao</option>
+                        </select>
+                    
+                        <select id="sortOrder">
+                            <option value="created_at">Mới nhất</option>
+                            <option value="stars_desc">Sao giảm dần</option>
+                            <option value="stars_asc">Sao tăng dần</option>
+                        </select>
+                    </div>
+                    
+                    <div id="review-list"></div>
+                    
+                    <button id="load-more" style="display:none;">Xem thêm</button>
+                </p>
+            </div>
+        </div>
+       
+        <div class="related-products">
+            <div class="related-products-header">
+                <h2>Related Products</h2>
+                <div class="action-slide">
+                    <button class="slide-btn slide-prev">&#10094;</button>
+                    <button class="slide-btn slide-next">&#10095;</button>
+                </div>
+            </div>
+            <div class="products-wrapper">
+                <div class="products-list">
+                    <div class="related-product-item">
+                        <div class="related-product-image">
+                            <img src="./images/ad-image-1.png" alt="Product Image">
+                            <button class="wishlist-btn">
+                                <i class="fa-regular fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="related-product-info">
+                            <h3>Sunstar Fresh Melon Juice</h3>
+                            <p>1 UNIT <span class="rating">★ 4.5</span></p>
+                            <span class="price">$18.00</span>
+                            <div class="related-product-actions">
+                                <div class="quantity-wrapper">
+                                    <button class="quantity-btn" onclick="changeQuantity(this, -1)"><i class="fa-solid fa-minus"></i></button>
+                                    <input type="number" class="quantity-input" value="1" min="1">
+                                    <button class="quantity-btn" onclick="changeQuantity(this, 1)"><i class="fa-solid fa-plus"></i></button>
+                                </div>
+                                <button class="add-to-cart-btn">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="related-product-item">
+                        <div class="related-product-image">
+                            <img src="./images/ad-image-1.png" alt="Product Image">
+                            <button class="wishlist-btn">
+                                <i class="fa-regular fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="related-product-info">
+                            <h3>Sunstar Fresh Melon Juice</h3>
+                            <p>1 UNIT <span class="rating">★ 4.5</span></p>
+                            <span class="price">$18.00</span>
+                            <div class="related-product-actions">
+                                <div class="quantity-wrapper">
+                                    <button class="quantity-btn" onclick="changeQuantity(this, -1)"><i class="fa-solid fa-minus"></i></button>
+                                    <input type="number" class="quantity-input" value="1" min="1">
+                                    <button class="quantity-btn" onclick="changeQuantity(this, 1)"><i class="fa-solid fa-plus"></i></button>
+                                </div>
+                                <button class="add-to-cart-btn">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>      
+                    <div class="related-product-item">
+                        <div class="related-product-image">
+                            <img src="./images/ad-image-1.png" alt="Product Image">
+                            <button class="wishlist-btn">
+                                <i class="fa-regular fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="related-product-info">
+                            <h3>Sunstar Fresh Melon Juice</h3>
+                            <p>1 UNIT <span class="rating">★ 4.5</span></p>
+                            <span class="price">$18.00</span>
+                            <div class="related-product-actions">
+                                <div class="quantity-wrapper">
+                                    <button class="quantity-btn" onclick="changeQuantity(this, -1)"><i class="fa-solid fa-minus"></i></button>
+                                    <input type="number" class="quantity-input" value="1" min="1">
+                                    <button class="quantity-btn" onclick="changeQuantity(this, 1)"><i class="fa-solid fa-plus"></i></button>
+                                </div>
+                                <button class="add-to-cart-btn">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>      
+                    <div class="related-product-item">
+                        <div class="related-product-image">
+                            <img src="./images/ad-image-1.png" alt="Product Image">
+                            <button class="wishlist-btn">
+                                <i class="fa-regular fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="related-product-info">
+                            <h3>Sunstar Fresh Melon Juice</h3>
+                            <p>1 UNIT <span class="rating">★ 4.5</span></p>
+                            <span class="price">$18.00</span>
+                            <div class="related-product-actions">
+                                <div class="quantity-wrapper">
+                                    <button class="quantity-btn" onclick="changeQuantity(this, -1)"><i class="fa-solid fa-minus"></i></button>
+                                    <input type="number" class="quantity-input" value="1" min="1">
+                                    <button class="quantity-btn" onclick="changeQuantity(this, 1)"><i class="fa-solid fa-plus"></i></button>
+                                </div>
+                                <button class="add-to-cart-btn">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div> 
+                    <div class="related-product-item">
+                        <div class="related-product-image">
+                            <img src="./images/ad-image-1.png" alt="Product Image">
+                            <button class="wishlist-btn">
+                                <i class="fa-regular fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="related-product-info">
+                            <h3>Sunstar Fresh Melon Juice</h3>
+                            <p>1 UNIT <span class="rating">★ 4.5</span></p>
+                            <span class="price">$18.00</span>
+                            <div class="related-product-actions">
+                                <div class="quantity-wrapper">
+                                    <button class="quantity-btn" onclick="changeQuantity(this, -1)"><i class="fa-solid fa-minus"></i></button>
+                                    <input type="number" class="quantity-input" value="1" min="1">
+                                    <button class="quantity-btn" onclick="changeQuantity(this, 1)"><i class="fa-solid fa-plus"></i></button>
+                                </div>
+                                <button class="add-to-cart-btn">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div> 
+                    <div class="related-product-item">
+                        <div class="related-product-image">
+                            <img src="./images/ad-image-1.png" alt="Product Image">
+                            <button class="wishlist-btn">
+                                <i class="fa-regular fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="related-product-info">
+                            <h3>Sunstar Fresh Melon Juice</h3>
+                            <p>1 UNIT <span class="rating">★ 4.5</span></p>
+                            <span class="price">$18.00</span>
+                            <div class="related-product-actions">
+                                <div class="quantity-wrapper">
+                                    <button class="quantity-btn" onclick="changeQuantity(this, -1)"><i class="fa-solid fa-minus"></i></button>
+                                    <input type="number" class="quantity-input" value="1" min="1">
+                                    <button class="quantity-btn" onclick="changeQuantity(this, 1)"><i class="fa-solid fa-plus"></i></button>
+                                </div>
+                                <button class="add-to-cart-btn">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div> 
+                    <div class="related-product-item">
+                        <div class="related-product-image">
+                            <img src="./images/ad-image-1.png" alt="Product Image">
+                            <button class="wishlist-btn">
+                                <i class="fa-regular fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="related-product-info">
+                            <h3>Sunstar Fresh Melon Juice</h3>
+                            <p>1 UNIT <span class="rating">★ 4.5</span></p>
+                            <span class="price">$18.00</span>
+                            <div class="related-product-actions">
+                                <div class="quantity-wrapper">
+                                    <button class="quantity-btn" onclick="changeQuantity(this, -1)"><i class="fa-solid fa-minus"></i></button>
+                                    <input type="number" class="quantity-input" value="1" min="1">
+                                    <button class="quantity-btn" onclick="changeQuantity(this, 1)"><i class="fa-solid fa-plus"></i></button>
+                                </div>
+                                <button class="add-to-cart-btn">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div> 
+                    <div class="related-product-item">
+                        <div class="related-product-image">
+                            <img src="./images/ad-image-1.png" alt="Product Image">
+                            <button class="wishlist-btn">
+                                <i class="fa-regular fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="related-product-info">
+                            <h3>Sunstar Fresh Melon Juice</h3>
+                            <p>1 UNIT <span class="rating">★ 4.5</span></p>
+                            <span class="price">$18.00</span>
+                            <div class="related-product-actions">
+                                <div class="quantity-wrapper">
+                                    <button class="quantity-btn" onclick="changeQuantity(this, -1)"><i class="fa-solid fa-minus"></i></button>
+                                    <input type="number" class="quantity-input" value="1" min="1">
+                                    <button class="quantity-btn" onclick="changeQuantity(this, 1)"><i class="fa-solid fa-plus"></i></button>
+                                </div>
+                                <button class="add-to-cart-btn">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div> 
+                    <div class="related-product-item">
+                        <div class="related-product-image">
+                            <img src="./images/ad-image-1.png" alt="Product Image">
+                            <button class="wishlist-btn">
+                                <i class="fa-regular fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="related-product-info">
+                            <h3>Sunstar Fresh Melon Juice</h3>
+                            <p>1 UNIT <span class="rating">★ 4.5</span></p>
+                            <span class="price">$18.00</span>
+                            <div class="related-product-actions">
+                                <div class="quantity-wrapper">
+                                    <button class="quantity-btn" onclick="changeQuantity(this, -1)"><i class="fa-solid fa-minus"></i></button>
+                                    <input type="number" class="quantity-input" value="1" min="1">
+                                    <button class="quantity-btn" onclick="changeQuantity(this, 1)"><i class="fa-solid fa-plus"></i></button>
+                                </div>
+                                <button class="add-to-cart-btn">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div> 
+                    <div class="related-product-item">
+                        <div class="related-product-image">
+                            <img src="./images/ad-image-1.png" alt="Product Image">
+                            <button class="wishlist-btn">
+                                <i class="fa-regular fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="related-product-info">
+                            <h3>Sunstar Fresh Melon Juice</h3>
+                            <p>1 UNIT <span class="rating">★ 4.5</span></p>
+                            <span class="price">$18.00</span>
+                            <div class="related-product-actions">
+                                <div class="quantity-wrapper">
+                                    <button class="quantity-btn" onclick="changeQuantity(this, -1)"><i class="fa-solid fa-minus"></i></button>
+                                    <input type="number" class="quantity-input" value="1" min="1">
+                                    <button class="quantity-btn" onclick="changeQuantity(this, 1)"><i class="fa-solid fa-plus"></i></button>
+                                </div>
+                                <button class="add-to-cart-btn">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div> 
+                </div>                               
+            </div>
+        </div>
+    </div>
+   
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    // Cập nhật giá trị cho các tùy chọn đường, trà và đá
+    let selectedSugar = "normal";
+    let selectedTea = "normal";
+    let selectedIce = "normal";
+
+    // Đường
+    const sugarOptions = document.querySelectorAll('.custom-item[data-type="sugar"] .option');
+    sugarOptions.forEach(option => {
+        option.addEventListener('click', function () {
+            selectedSugar = this.getAttribute('data-value');
+            document.querySelector('input[name="sugar"]').value = selectedSugar;
+            sugarOptions.forEach(opt => opt.classList.remove('selected'));
+            this.classList.add('selected');
+        });
+    });
+
+    // Trà
+    const teaOptions = document.querySelectorAll('.custom-item[data-type="tea"] .option');
+    teaOptions.forEach(option => {
+        option.addEventListener('click', function () {
+            selectedTea = this.getAttribute('data-value');
+            document.querySelector('input[name="tea"]').value = selectedTea;
+            teaOptions.forEach(opt => opt.classList.remove('selected'));
+            this.classList.add('selected');
+        });
+    });
+
+    // Đá
+    const iceOptions = document.querySelectorAll('.custom-item[data-type="ice"] .option');
+    iceOptions.forEach(option => {
+        option.addEventListener('click', function () {
+            selectedIce = this.getAttribute('data-value');
+            document.querySelector('input[name="ice"]').value = selectedIce;
+            iceOptions.forEach(opt => opt.classList.remove('selected'));
+            this.classList.add('selected');
+        });
+    });
+});
+
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    // Xử lý chọn kích cỡ
+    const sizeItems = document.querySelectorAll('.size-item');
+    
+    // Gán giá trị mặc định là kích thước đầu tiên
+    if (sizeItems.length > 0) {
+        const firstSize = sizeItems[0];
+        document.getElementById('selected_size').value = firstSize.getAttribute('data-value');
+        firstSize.classList.add('selected'); // Thêm class selected vào kích thước đầu tiên
+    }
+    
+    sizeItems.forEach(item => {
+        item.addEventListener('click', function() {
+            // Lấy giá trị kích thước đã chọn
+            const selectedSize = this.getAttribute('data-value');
+            
+            // Cập nhật giá trị vào trường hidden
+            document.getElementById('selected_size').value = selectedSize;
+            
+            // Thêm class selected cho kích thước đã chọn và bỏ class cho các item khác
+            sizeItems.forEach(item => item.classList.remove('selected'));
+            this.classList.add('selected');
+        });
+    });
+
+    // Xử lý tùy chỉnh (Đường, Trà, Đá)
+    const customOptions = document.querySelectorAll(".option");
+    customOptions.forEach(option => {
+        option.addEventListener("click", function () {
+            const parent = this.parentElement;
+            parent.querySelectorAll(".option").forEach(opt => opt.classList.remove("selected"));
+            this.classList.add("selected");
+        });
+    });
+});
+
+
+    </script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let currentPage = 1;
+            const productId = "{{ product.pro_id }}"; // Lấy ID sản phẩm
+            const reviewList = document.getElementById('review-list');
+            const loadMoreButton = document.getElementById('load-more');
+            const reviewFilter = document.getElementById('reviewFilter');
+            const sortOrder = document.getElementById('sortOrder');
+        
+            function fetchReviews(page = 1) {
+                const starFilter = reviewFilter.value;
+                const sort = sortOrder.value;
+        
+                // Gọi AJAX đến API reviews
+                fetch(`/shop/product_detail/${productId}/?page=${page}&stars=${starFilter}&sort=${sort}`, {
+                    headers: { 'x-requested-with': 'XMLHttpRequest' }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (page === 1) {
+                        reviewList.innerHTML = ''; // Reset nội dung khi tải trang đầu tiên
+                    }
+        
+                    data.reviews.forEach(review => {
+                        const reviewItem = document.createElement('div');
+                        reviewItem.innerHTML = `
+                            <div class="review-item">
+                                <strong>${review.user}</strong> - ${review.rate} sao<br>
+                                ${review.content}<br>
+                                <small>${review.created_at}</small>
+                            </div>
+                        `;
+                        reviewList.appendChild(reviewItem);
+                    });
+        
+                    if (data.has_next) {
+                        loadMoreButton.style.display = 'block';
+                    } else {
+                        loadMoreButton.style.display = 'none';
+                    }
+                    currentPage = data.page_number;
+                });
+            }
+        
+            // Gọi hàm fetchReviews khi load trang
+            fetchReviews();
+        
+            // Xử lý sự kiện khi nhấn vào nút "Xem thêm"
+            loadMoreButton.addEventListener('click', function () {
+                fetchReviews(currentPage + 1);
+            });
+        
+            // Lọc reviews theo số sao và sắp xếp
+            reviewFilter.addEventListener('change', function () {
+                fetchReviews(1); // Load lại trang 1
+            });
+            sortOrder.addEventListener('change', function () {
+                fetchReviews(1); // Load lại trang 1
+            });
+        });
+    </script>
+    <script src="{% static './js/ProductDetail/product_detail.js' %}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // AJAX cho nút Like
+            var likeButton = document.getElementById('like-button');
+            likeButton.addEventListener('click', function() 
+            {
+                var productId = this.getAttribute('data-product-id');
+                var csrftoken = getCookie('csrftoken'); // Đảm bảo bạn có hàm này để lấy CSRF token
+      
+                fetch('/shop/like/', 
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken
+                    },
+                    body: JSON.stringify({'product_id': productId})
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.liked) {
+                        likeButton.innerHTML = 'Unlike';
+                        likeButton.classList.remove('not-liked');
+                        likeButton.classList.add('liked');
+                        
+                    } else {
+                        likeButton.innerHTML = 'Like';
+                        likeButton.classList.remove('liked');
+                        likeButton.classList.add('not-liked');
+                        
+                    }
+                });
+            });
+        });
+      
+        // Hàm để lấy CSRF token từ cookie
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const prevButton = document.querySelector('.slide-prev');
+            const nextButton = document.querySelector('.slide-next');
+            const productList = document.querySelector('.products-list');
+        
+            // Xác định chiều rộng mỗi sản phẩm và khoảng cách giữa các sản phẩm
+            const productWidth = document.querySelector('.related-product-item').offsetWidth + 10; // Width + margin-right
+        
+            prevButton.addEventListener('click', function () {
+                productList.scrollBy({ left: -productWidth, behavior: 'smooth' });
+            });
+        
+            nextButton.addEventListener('click', function () {
+                productList.scrollBy({ left: productWidth, behavior: 'smooth' });
+            });
+        });
+        
+
+    </script>
+    <script>
+        function changeQuantity(button, amount) {
+            var quantityInput = button.parentElement.querySelector('.quantity-input');
+            var currentQuantity = parseInt(quantityInput.value);
+            var newQuantity = currentQuantity + amount;
+            if (newQuantity > 0) {
+                quantityInput.value = newQuantity;
+            }
+        }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var quantityInput = document.querySelector('.quantity-input');
+            var plusButton = document.querySelector('.quantity-btn.plus');
+            var minusButton = document.querySelector('.quantity-btn.minus');
+        
+            plusButton.addEventListener('click', function() {
+                var currentQuantity = parseInt(quantityInput.value);
+                quantityInput.value = currentQuantity + 1;
+            });
+        
+            minusButton.addEventListener('click', function() {
+                var currentQuantity = parseInt(quantityInput.value);
+                if (currentQuantity > 1) {
+                    quantityInput.value = currentQuantity - 1;
+                }
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    const sizeItems = document.querySelectorAll('.size-item');
+    const quantityInput = document.querySelector('.quantity-input');
+    const addToCartBtn = document.querySelector('.add-to-cart-btn');
+    const priceElement = document.querySelector('.size-price'); // Để lấy giá của size đầu tiên
+
+    // Hàm tính tổng tiền
+    function updateTotalPrice() {
+        // Lấy giá của kích thước đã chọn
+        const selectedSizeElement = document.querySelector('.size-item.selected');
+        const priceText = selectedSizeElement ? selectedSizeElement.querySelector('.size-price').textContent.replace(' VNĐ', '').trim() : '0';
+
+        // Chuyển giá trị thành số, đảm bảo giá trị có thể là số thập phân
+        const price = parseFloat(priceText.replace(/[^\d.-]/g, '')); // Loại bỏ các ký tự không phải là số
+
+        // Lấy số lượng
+        const quantity = parseInt(quantityInput.value);
+
+        // Tính tổng tiền
+        const totalPrice = price * quantity;
+
+        // Cập nhật nội dung nút "Thêm vào giỏ hàng"
+        addToCartBtn.textContent = `Thêm vào giỏ hàng: ${totalPrice.toLocaleString()} VNĐ`;
+    }
+
+    // Gán giá trị mặc định cho trường hidden và nút khi trang tải
+    if (sizeItems.length > 0) {
+        const firstSize = sizeItems[0];
+        document.getElementById('selected_size').value = firstSize.getAttribute('data-value');
+        firstSize.classList.add('selected');
+        updateTotalPrice(); // Cập nhật số tiền khi trang tải
+    }
+
+    // Cập nhật lại số tiền khi người dùng chọn kích thước
+    sizeItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const selectedSize = this.getAttribute('data-value');
+            document.getElementById('selected_size').value = selectedSize;
+
+            sizeItems.forEach(item => item.classList.remove('selected'));
+            this.classList.add('selected');
+            updateTotalPrice(); // Cập nhật lại số tiền khi chọn kích thước mới
+        });
+    });
+
+    // Cập nhật lại số tiền khi số lượng thay đổi
+    quantityInput.addEventListener('input', function() {
+        updateTotalPrice(); // Cập nhật lại số tiền khi thay đổi số lượng
+    });
+
+    // Xử lý tùy chỉnh (Đường, Trà, Đá)
+    const customOptions = document.querySelectorAll(".option");
+    customOptions.forEach(option => {
+        option.addEventListener("click", function () {
+            const parent = this.parentElement;
+            parent.querySelectorAll(".option").forEach(opt => opt.classList.remove("selected"));
+            this.classList.add("selected");
+        });
+    });
+});
+
+
+    </script>
+    <script>
+        let currentIndex = 0;
+        const visibleImages = 4;
+        const track = document.getElementById("carouselTrack");
+        const totalImages = track.children.length;
+        
+        function moveCarousel(direction) {
+          const maxIndex = totalImages - visibleImages;
+          currentIndex += direction;
+        
+          if (currentIndex < 0) currentIndex = 0;
+          if (currentIndex > maxIndex) currentIndex = maxIndex;
+        
+          const offset = -(currentIndex * (100 / visibleImages));
+          track.style.transform = `translateX(${offset}%)`;
+        }
+        </script>
+{% endblock %} 
+

@@ -1,0 +1,147 @@
+{% extends "partion/header_footer.html" %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/liked_Product/style.css' %}">
+<div class="container">
+    <h1>Sản phẩm yêu thích</h1>
+    <div class="product-grid" id="favorite-products">
+        {% for product in favorite_products %}
+        <div class="product-card" data-product-id="{{ product.pro_id }}">
+            <div class="product-image">
+                <!-- <img src="{{ product.image_pro }}" alt="{{ product.title }}"> -->
+            </div>
+            <div class="product-details">
+                <h3>{{ product.title }}</h3>
+                <div class="price">{{ product.price|default:"Liên hệ" }} VND</div>
+                <div class="rating">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="far fa-star"></i>
+                </div>
+                <div class="product-actions">
+                    <a href="{% url 'product-detail' identifier=product.pro_id %}" class="nav-link">Detail<iconify-icon icon="uil:shopping-cart"></a>
+     
+                    <button class="remove-btn" data-product-id="{{ product.pro_id }}">Xóa</button>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>Không có sản phẩm yêu thích nào.</p>
+        {% endfor %}
+    </div>
+    <div class="pagination">
+        {% if favorite_products.has_previous %}
+        <button class="page-btn" data-page="{{ favorite_products.previous_page_number }}">Trước</button>
+        {% endif %}
+        <span>Trang {{ favorite_products.number }} / {{ favorite_products.paginator.num_pages }}</span>
+        {% if favorite_products.has_next %}
+        <button class="page-btn" data-page="{{ favorite_products.next_page_number }}">Tiếp theo</button>
+        {% endif %}
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    const favoriteContainer = document.getElementById('favorite-products');
+
+    // Hàm tải danh sách sản phẩm
+    function loadFavorites(page = 1) {
+        fetch(`/shop/favorites/?page=${page}`, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        })
+            .then(response => response.json())
+            .then(data => {
+                favoriteContainer.innerHTML = '';
+                data.products.forEach(product => {
+                    favoriteContainer.innerHTML += `
+                        <div class="product-card" data-product-id="${product.id}">
+                            <div class="product-image">
+                            </div>
+                            <div class="product-details">
+                                <h3>${product.title}</h3>
+                                <div class="price">${product.price} VND</div>
+                                <div class="rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                                <div class="product-actions">
+                                    <a href="${product.detail_url}" class="nav-link">Detail<iconify-icon icon="uil:shopping-cart"></a>
+
+                                    <button class="remove-btn" data-product-id="${product.id}">Xóa</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                // Cập nhật pagination
+                const pagination = document.querySelector('.pagination');
+                pagination.innerHTML = `
+                    ${data.has_previous ? `<button class="page-btn" data-page="${data.page_number - 1}">Trước</button>` : ''}
+                    <span>Trang ${data.page_number} / ${data.total_pages}</span>
+                    ${data.has_next ? `<button class="page-btn" data-page="${data.page_number + 1}">Tiếp theo</button>` : ''}
+                `;
+            });
+    }
+
+    // Xử lý phân trang
+    document.body.addEventListener('click', function (e) {
+        if (e.target.classList.contains('page-btn')) {
+            const page = e.target.getAttribute('data-page');
+            loadFavorites(page);
+        }
+    });
+
+    // Xử lý xóa sản phẩm
+    favoriteContainer.addEventListener('click', function (e) {
+        if (e.target.classList.contains('remove-btn')) {
+            const productId = e.target.getAttribute('data-product-id');
+            fetch('/shop/remove_favorite/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+                body: JSON.stringify({ product_id: productId }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Xóa sản phẩm khỏi giao diện
+                        const productCard = document.querySelector(`.product-card[data-product-id="${productId}"]`);
+                        productCard.remove();
+                    } else {
+                        alert('Không thể xóa sản phẩm này.');
+                    }
+                });
+        }
+    });
+
+    // Hàm lấy CSRF token từ cookie
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Tải trang đầu tiên khi load
+    loadFavorites(1);
+});
+
+</script>
+
+{% endblock %} 

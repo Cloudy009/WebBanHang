@@ -1,0 +1,39 @@
+{% extends "partion/header_footer.html" %}
+
+{% block content %}
+{% load static %}
+<div class="container mt-5">
+    <div class="alert alert-success text-center">
+        <h4>Thank you for your order!</h4>
+        <p>Your order (Order ID: {{ hoadon.maHoaDon }}) has been successfully placed.</p>
+    </div>
+
+    <div class="card mt-3">
+        <div class="card-header">
+            <h5>Order Summary</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>Order ID:</strong> {{ hoadon.maHoaDon }}</p>
+            <p><strong>Amount Paid:</strong> ${{ hoadon.tongTien }}</p>
+            <p><strong>Shipping Address:</strong> {{ hoadon.diaChi }}</p>
+            <p><strong>Email:</strong> {{ hoadon.email }}</p>
+            <p><strong>Status:</strong>
+                {% if hoadon.status %}
+                    <span class="text-success">Đã thanh toán</span>
+                {% else %}
+                    <span class="text-danger">Chưa thanh toán</span>
+                {% endif %}
+            </p>
+            {% if hoadon.voucher %}
+                <p><strong>Voucher Applied:</strong> 
+                    {{ hoadon.voucher.code }} 
+                    (-${{ hoadon.voucher.discount_amount }})
+                </p>
+            {% else %}
+                <p><strong>Voucher Applied:</strong> Không sử dụng</p>
+            {% endif %}
+        </div>
+    </div>
+    <a href="{% url 'homePage' %}" class="btn btn-primary mt-3">Continue Shopping</a>
+</div>
+{% endblock %}

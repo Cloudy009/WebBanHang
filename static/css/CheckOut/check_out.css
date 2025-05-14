@@ -1,0 +1,150 @@
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .container {
+            margin-top: 40px;
+        }
+
+        /* Các bước (Step Indicator) */
+        .step-indicator {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .step-indicator span {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: #000;
+            color: white;
+            border-radius: 50%;
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        .form-control {
+            border-radius: 0;
+            border-color: #ddd;
+            padding: 10px;
+        }
+
+        .form-check-input {
+            margin-top: 10px;
+        }
+
+        .form-check-label {
+            margin-left: 25px;
+            font-size: 14px;
+        }
+
+        .btn-outline-dark {
+            background-color: #fff;
+            color: #000;
+            border-radius: 0;
+            border: 2px solid #000;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .btn-outline-dark:hover {
+            background-color: #000;
+            color: #fff;
+        }
+
+        .btn-outline-primary {
+            border-radius: 0;
+            border: 2px solid #000;
+        }
+
+        .card {
+            margin-bottom: 20px;
+            background-color: #fff;
+            border: none;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Order Summary */
+        .order-summary {
+            background-color: #fff;
+            padding: 20px 0px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .order-summary h5 {
+            margin-bottom: 20px;
+        }
+
+        .list-group-item {
+            border: none;
+            font-size: 16px;
+        }
+
+        .list-group-item strong {
+            font-weight: 600;
+        }
+
+        .btn-success {
+            background-color: #000;
+            border: none;
+            font-size: 16px;
+            padding: 12px;
+        }
+
+        .btn-success:hover {
+            background-color: #333;
+        }
+
+        .btn-block {
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .section-heading {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        /* Tổng cộng và các thông tin tài chính */
+        .summary-item {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* Payment icons */
+        .payment-methods {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .payment-methods button {
+            width: 30%;
+            padding: 20px;
+            text-align: center;
+            background: white;
+            border: 2px solid #ddd;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .payment-methods button i {
+            font-size: 24px;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .payment-methods button:hover {
+            background: #000;
+            color: #fff;
+        }

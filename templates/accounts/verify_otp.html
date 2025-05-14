@@ -1,0 +1,155 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xác thực OTP</title>
+    <link rel="stylesheet" href="{% static 'css/otp_verification.css' %}">
+    <link rel="stylesheet" href="{% static 'css/model_status.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bell_animation.css' %}">
+    <link rel="stylesheet" href="{% static 'css/loading-container.css' %}">
+
+</head>
+<body>
+    <div class="otp-container">
+        <div class="image-container">
+            <img src="{% static 'images/Emails-amico.png' %}" alt="">
+        </div>
+        <h2>OTP Verification</h2>
+        <p class="note">Enter the verification code we sent to you</p>
+        
+        {% if error %}
+            <div class="error-message">{{ error }}</div>
+        {% endif %}
+
+        <form method="post" class="form-inputOTP">
+            {% csrf_token %}
+            <div class="otp-inputs">
+                <input type="text" maxlength="1" name="otp1" required>
+                <input type="text" maxlength="1" name="otp2" required>
+                <input type="text" maxlength="1" name="otp3" required>
+                <input type="text" maxlength="1" name="otp4" required>
+                <input type="text" maxlength="1" name="otp5" required>
+                <input type="text" maxlength="1" name="otp6" required>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+
+        <form class="form-resendOTP" method="post">
+            <p>OTP not received?</p>
+            {% csrf_token %}
+            <button type="submit" class="resend_otp_btn" name="resend_otp">RESEND</button>
+        </form>
+
+        <div id="countdown"></div>
+        
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% elif message %}
+            <p class="message">{{ message }}</p>
+        {% endif %}
+    </div>
+    <div class="model" id="successModal">
+        <div class="model-container" >
+            <div class="model-header">
+                <div class="animation-container">
+                    <div class="pulse">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                </div>
+                <div class="icon-container"> 
+                    <img src="{% static 'images/icon-check.png' %}" class="success-icon" alt="">     
+                </div>
+                <p class="success-message">Authentication</p>
+                <p class="success-submessage">Successfully</p>
+            </div>
+            <div class="model-footer">
+                <div class="line-footer"></div>
+            </div>
+        </div>
+    </div>
+
+    {% comment %} <div class="loading-container">
+        <div class="loader"></div>
+    </div> {% endcomment %}
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() 
+        {
+            // OTP input logic
+            const inputs = document.querySelectorAll(".otp-inputs input");
+            inputs.forEach((input, index) => 
+            {
+                input.addEventListener("input", (e) => 
+                {
+                    if (e.target.value.length === 1 && index < inputs.length - 1) 
+                    {
+                        inputs[index + 1].focus();
+                    }
+                });
+
+                input.addEventListener("keydown", (e) => 
+                {
+                    if (e.key === "Backspace" && index > 0 && e.target.value.length === 0) 
+                    {
+                        inputs[index - 1].focus();
+                    }
+                });
+            });
+
+            // Countdown timer logic
+            let timeLeft = 120;
+            const countdownElement = document.getElementById('countdown');
+            const countdownInterval = setInterval(() => 
+            {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                countdownElement.textContent = `Time left: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                
+                if (timeLeft <= 0) 
+                {
+                    clearInterval(countdownInterval);
+                    countdownElement.textContent = 'Time expired. Please request a new OTP.';
+                }
+                
+                timeLeft -= 1;
+            }, 1000);
+
+            {% if success %}
+                const modal = document.getElementById("successModal");
+                modal.classList.add("show");
+                setTimeout(() => {
+                    window.location.href = "{% url 'login' %}";
+                }, 2000);
+            {% endif %}
+        });
+    </script>
+    {% comment %} <script>
+        // static/js/loading.js
+        document.addEventListener("DOMContentLoaded", function () {
+            const loadingElement = document.querySelector(".loading-container");
+
+            function showLoading() {
+                loadingElement.style.display = "block";
+            }
+
+            function hideLoading() {
+                loadingElement.style.display = "none";
+            }
+
+            // Hiển thị loading khi gửi form
+            const forms = document.querySelectorAll("form");
+            forms.forEach(form => {
+                form.addEventListener("submit", function () {
+                    showLoading();
+                });
+            });
+
+            // Ẩn loading sau khi tải trang xong
+            hideLoading();
+        });
+
+    </script> {% endcomment %}
+</body>
+</html>

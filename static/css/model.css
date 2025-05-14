@@ -1,0 +1,135 @@
+:root {
+    --pink-color: #e26e70;
+}
+/* *{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+} */
+
+/* body
+{
+    height: 100vh;
+    overflow: hidden;
+    background-image: linear-gradient( 45deg, rgb(65, 88, 208) 0%, rgb(200, 80, 192) 50%, rgb(255, 204, 112) 100% );
+} */
+
+.modal_container
+{
+    box-sizing: border-box;
+    font-family: sans-serif;
+    font-size: 15px;
+}
+
+.modal
+{
+    position: fixed;
+    top: 0;
+    height: 100vh;
+    width: 100vw;
+    background: rgb(0, 0, 0, 0.7);
+    display: block;
+}
+
+.open_modal
+{
+    padding: 20px 30px;
+    border: 1px solid var(--pink-color);
+    border-radius: 15px;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: bold;
+    font-size: large;
+    transition: 0.35s;
+}
+
+.modal_inner
+{
+    width: 400px;
+    position: relative;
+    top: 35%;
+    margin: auto;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    animation: ModalShow 0.5s linear;
+}
+
+.modal_header
+{
+    background: var(--pink-color);
+    padding: 15px 15px;
+    color: white;
+    height: 50px;
+    font-weight: 600;
+}
+
+.modal_header p
+{
+    color: white;
+}
+
+.modal_body
+{
+    padding: 15px 15px 0px;
+    margin-bottom: 15px;
+    
+}
+.modal_body h3
+{
+    color: var(--pink-color);
+    margin-bottom: 5px;
+    font-weight: bolder;
+}
+
+.modal_footer button
+{
+    padding: 6px 23px;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    background: var(--pink-color);
+    color: white;
+    margin-right: 15px ;
+    cursor: pointer;
+    transition: 0.25s;
+}
+.modal_footer
+{
+    position: relative;
+    padding: 15px;
+    text-align: right;
+}
+
+.hide
+{
+    display:none;
+}
+
+@keyframes ModalShow
+{
+    from{
+        top: -200px;
+        opacity: 0;   
+    }
+    to
+    {
+        top: 35%;
+        opacity: 1;
+    }
+}
+
+.modal_footer button:hover
+{
+    transform: scale(1.1);
+    background: #4cd137;
+}
+
+.open_modal:hover
+{
+    background: #4cd137;
+    transform: translate(-50%, -50%);
+}
