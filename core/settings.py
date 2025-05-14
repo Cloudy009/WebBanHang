@@ -31,10 +31,10 @@ if not SECRET_KEY:
 DEBUG = 'RENDER' not in os.environ
 
 # HOSTs List
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'b250-171-253-138-54.ngrok-free.app', 'example.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'b250-171-253-138-54.ngrok-free.app', 'example.com', 'web-banhang.onrender.com']
 
 # Add here your deployment HOSTS
-CSRF_TRUSTED_ORIGINS = ['http://localhost:8000','http://127.0.0.1:8000', 'http://localhost:5085', 'http://127.0.0.1:8000', 'http://127.0.0.1:5085', 'https://b250-171-253-138-54.ngrok-free.app', 'https://example.com']
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8000','http://127.0.0.1:8000', 'http://localhost:5085', 'http://127.0.0.1:8000', 'http://127.0.0.1:5085', 'https://b250-171-253-138-54.ngrok-free.app', 'https://example.com', 'https://web-banhang.onrender.com']
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:    
@@ -130,6 +130,7 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     'https://b250-171-253-138-54.ngrok-free.app',  # Thay thế với URL ngrok của bạn
+    'https://web-banhang.onrender.com'
 ]
 
 ROOT_URLCONF = "core.urls"
