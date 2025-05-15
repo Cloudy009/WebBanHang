@@ -62,13 +62,15 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+
+    'daphne',
+
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'django.contrib.sites',
 
     # Thứ 3 party apps liên quan
     'axes',
-    'daphne',
     'rest_framework',
     'channels',
 
