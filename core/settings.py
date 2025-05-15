@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os, random, string
 from pathlib import Path
 from dotenv import load_dotenv
-import str2bool
+from str2bool import str2bool
 
 load_dotenv()  # take environment variables from .env.
 
