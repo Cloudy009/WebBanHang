@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os, random, string
 from pathlib import Path
 from dotenv import load_dotenv
+import str2bool
 
 load_dotenv()  # take environment variables from .env.
 
@@ -28,20 +29,19 @@ if not SECRET_KEY:
     SECRET_KEY = ''.join(random.choice( string.ascii_lowercase  ) for i in range( 32 ))
 
 # Render Deployment Code
-DEBUG = False
+DEBUG = str2bool(os.environ.get('DEBUG'))
 
 # HOSTs List
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'b250-171-253-138-54.ngrok-free.app', 'example.com', 'web-banhang-ujgw.onrender.com']
+ALLOWED_HOSTS = ['*']
 # Add here your deployment HOSTS
 CSRF_TRUSTED_ORIGINS = ['http://localhost:8000','http://127.0.0.1:8000', 'http://localhost:5085', 'http://127.0.0.1:8000', 'http://127.0.0.1:5085', 'https://b250-171-253-138-54.ngrok-free.app', 'https://example.com', 'https://web-banhang-ujgw.onrender.com']
-
-RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 
 CORS_ALLOWED_ORIGINS = [
     'https://b250-171-253-138-54.ngrok-free.app',  # Thay thế với URL ngrok của bạn
     'https://web-banhang-ujgw.onrender.com'
 ]
 
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:    
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
     CSRF_TRUSTED_ORIGINS.append('https://' + RENDER_EXTERNAL_HOSTNAME)
