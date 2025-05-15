@@ -18,11 +18,10 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 
-from django.contrib.auth import update_session_auth_hash, authenticate, login, logout
+from django.contrib.auth import update_session_auth_hash, logout
 from home.forms import *
 from django.shortcuts import render, redirect
 from django.core.mail import send_mail
-from django.template.loader import render_to_string
 from django.db import transaction 
 from django.conf import settings
 from home.vnpay import vnpay
@@ -752,13 +751,6 @@ def testFiller(request):
     categories = Category.objects.all()
     allProduct = Product.objects.all()
     return render(request, 'shop/testFiller.html', {'categories': categories, 'allProduct': allProduct})
-
-
-# def logOut(request):
-#     logout(request)
-#     request.session.pop('user_id', None)
-#     request.session.pop('user_email', None)
-#     return redirect('homePage')
 
 
 def get_admin():

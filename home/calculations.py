@@ -1,10 +1,6 @@
-import base64
 from datetime import datetime, timedelta
-from io import BytesIO
-import locale
 from django.contrib.auth.models import User
 from django.utils import timezone
-from matplotlib import pyplot as plt
 from home.models import Category, Detail, HoaDon, Like, Product, ProductImage, ProductSize
 from django.db.models import Sum, Count, F
 from accounts.models import CustomUser
@@ -275,118 +271,25 @@ def calculate_users_registered_this_month():
     total_users_this_month = 0
     return total_users_this_month
 
-import plotly.express as px
-import pandas as pd
-from django.db.models.functions import ExtractMonth
 
 def get_monthly_revenue(year):
-    # # Lấy tất cả hóa đơn trong năm
-    # start_of_year = datetime(year, 1, 1)
-    # end_of_year = datetime(year, 12, 31, 23, 59, 59)
-    
-    # # Lọc các hóa đơn trong năm
-    # invoices = HoaDon.objects.filter(created_at__gte=start_of_year, created_at__lte=end_of_year)
-
-    # # Khởi tạo mảng doanh thu theo từng tháng (mặc định là 0)
-    # revenue = [0] * 12
-
-    # # Duyệt qua từng hóa đơn và tính doanh thu cho từng tháng
-    # for invoice in invoices:
-    #     # Lấy tháng của hóa đơn
-    #     month = invoice.created_at.month
-        
-    #     # Thêm doanh thu vào tháng tương ứng
-    #     revenue[month - 1] += invoice.tongTien  # tháng 1 -> index 0, tháng 2 -> index 1, ...
     revenue = [0] * 12
+    invoices = HoaDon.objects.filter(created_at__year=year)
+
+    for invoice in invoices:
+        month = invoice.created_at.month
+        revenue[month - 1] += float(invoice.tongTien)  # Convert Decimal to float
+
     return revenue
 
 
 
-def get_revenue_chart(year):
-     # Giả sử đây là doanh thu hàng tháng (đơn vị: VND)
-    revenue = get_monthly_revenue(year)  # Hàm này lấy doanh thu từ cơ sở dữ liệu
-    months = [f'{i+1}' for i in range(12)]  # Các tháng trong năm
-
-    # Tạo biểu đồ cột với Plotly
-    fig = go.Figure()
-
-    # Thêm cột biểu diễn doanh thu
-    fig.add_trace(go.Bar(
-        x=months,
-        y=revenue,
-        name='Doanh thu',
-        marker=dict(
-            color='rgb(0, 123, 255)',  # Màu sắc của cột (có thể thay đổi)
-            line=dict(color='rgb(0, 70, 140)', width=2),  # Màu viền cột
-            opacity=0.7  # Độ trong suốt của cột
-        ),
-        hovertemplate='%{y} VND<extra></extra>',  # Hiển thị thông tin khi hover
-    ))
-
-    # Tùy chỉnh layout (thiết lập tiêu đề, nhãn, và bố cục)
-    fig.update_layout(
-        title=f'Doanh thu theo tháng trong năm {year}',
-        xaxis_title='Tháng',
-        yaxis_title='Doanh thu (VND)',
-        template='plotly_dark',  # Mẫu nền tối
-        plot_bgcolor='rgb(28, 28, 28)',  # Màu nền của biểu đồ
-        paper_bgcolor='rgb(28, 28, 28)',  # Màu nền của trang
-        font=dict(color='white'),  # Màu chữ
-        showlegend=False,
-        height=300,
-        xaxis=dict(
-            tickangle=0  # Đảm bảo các nhãn tháng không bị xoay
-        )
-    )
-
-    # Trả về biểu đồ dưới dạng HTML
-    graph_html = fig.to_html(full_html=False)
-    return graph_html
-
-import plotly.graph_objects as go
-
-def get_revenue_line_chart(year):
+def get_revenue_data_for_chart(year):
     revenue = get_monthly_revenue(year)
+    target = [500000] * 12  # Mục tiêu tháng
 
-    # Doanh thu mục tiêu giả sử là 500,000 VND mỗi tháng
-    target_revenue = [500000] * 12  # Mục tiêu doanh thu cố định
-
-    # Các tháng trong năm
-    months = [f'Tháng {i+1}' for i in range(12)]
-
-    # Tạo biểu đồ đường với Plotly
-    fig = go.Figure()
-
-    # Thêm đường doanh thu thực tế
-    fig.add_trace(go.Scatter(
-        x=months,
-        y=revenue,
-        mode='lines+markers',
-        name='Doanh thu thực tế',
-        line=dict(color='blue'),
-        marker=dict(size=6),
-        text=[f'{r} VND' for r in revenue],  # Hiển thị doanh thu khi hover
-        hoverinfo='text'
-    ))
-
-    # Thêm đường mục tiêu doanh thu
-    fig.add_trace(go.Scatter(
-        x=months,
-        y=target_revenue,
-        mode='lines',
-        name='Mục tiêu doanh thu',
-        line=dict(color='red', dash='dash'),  # Đường mục tiêu là đường chấm
-    ))
-
-    # Thiết lập tiêu đề và nhãn
-    fig.update_layout(
-        title=f'Doanh thu theo tháng trong năm {year}',
-        xaxis_title='Tháng',
-        yaxis_title='Doanh thu (VND)',
-        template='plotly_dark'
-    )
-
-    # Trả về biểu đồ dưới dạng HTML
-    graph_html = fig.to_html(full_html=False)
-
-    return graph_html
+    return {
+        'labels': [f'Tháng {i+1}' for i in range(12)],
+        'revenue': revenue,
+        'target': target
+    }

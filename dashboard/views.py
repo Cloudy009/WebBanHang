@@ -1,7 +1,8 @@
 from datetime import datetime
+import json
 from django.shortcuts import render
 
-from home.calculations import calculate_daily_products_sold, calculate_day_revenue, calculate_monthly_products_sold, calculate_month_revenue, calculate_users_registered_this_month, count_registered_users_today, get_revenue_chart, get_revenue_line_chart
+from home.calculations import calculate_daily_products_sold, calculate_day_revenue, calculate_monthly_products_sold, calculate_month_revenue, calculate_users_registered_this_month, count_registered_users_today, get_revenue_data_for_chart
 
 
 # Create your views here.
@@ -14,17 +15,8 @@ def index(request):
     userDKNgay = count_registered_users_today()
     userDKThang = calculate_users_registered_this_month()
     #BIỂU ĐỒ DOANH THU THEO NĂM
-    current_year = current_year = datetime.now().year 
-    revenue_chart_html = get_revenue_chart(current_year)
-    revenue_line_chart_html = get_revenue_line_chart(current_year)
-
-    print('doanhThuNgay: ', doanhThuNgay),
-    print('doanhThuThang: ', doanhThuThang),
-    print('sanPhamBanThang: ', sanPhamBanThang),
-    print('sanPhamBanNgay: ', sanPhamBanNgay),
-    print('userDKNgay: ', userDKNgay),
-    print('userDKThang: ', userDKThang),
-
+    current_year = datetime.now().year 
+    chart_data = get_revenue_data_for_chart(current_year)
 
     context = {
         'doanhThuThang': doanhThuThang,
@@ -33,8 +25,7 @@ def index(request):
         'doanhThuNgay'    : doanhThuNgay,
         'userDKThang'    : userDKThang,
         'userDKNgay'    : userDKNgay,
-        'revenue_chart_html'   : revenue_chart_html,
-        'revenue_line_chart_html'   : revenue_line_chart_html,
+        'chart_data': json.dumps(chart_data),
         'userDKNgay' : userDKNgay
 
         }
