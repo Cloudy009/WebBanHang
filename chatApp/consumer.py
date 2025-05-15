@@ -4,18 +4,21 @@ from django.contrib.auth import get_user_model
 from channels.db import database_sync_to_async
 from django.utils import timezone
 
-User = get_user_model()
+# Hoãn lấy user model, gọi khi cần
+def get_user_model_lazy():
+    return get_user_model()
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def websocket_connect(self, event):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = f'chat_{self.room_name}'
-        self.last_message_timestamp = timezone.now()  # Initialize timestamp for messages
+        self.last_message_timestamp = timezone.now()
 
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.accept()
 
     async def receive(self, text_data):
+        User = get_user_model_lazy()  # gọi khi dùng
         text_data_json = json.loads(text_data)
         action = text_data_json.get('action')
         message_content = text_data_json.get('message')
@@ -39,7 +42,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     'type': 'chat_message',
                     'message': message_content,
                     'user': user.username,
-                    'timestamp': timezone.now().isoformat()  # Include timestamp for sorting
+                    'timestamp': timezone.now().isoformat()
                 }
             )
 
@@ -57,9 +60,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def save_message(self, user, message_content):
-        # Import model tại đây, tránh lỗi AppRegistryNotReady
         from .models import Message, Room
-        room, created = Room.objects.get_or_create(name=self.room_name)
+        room, _ = Room.objects.get_or_create(name=self.room_name)
         return Message.objects.create(
             room=room,
             user=user,
@@ -68,7 +70,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def get_old_messages(self, oldest_message_timestamp=None):
-        from .models import Message, Room  # Import model ở đây cũng được
+        from .models import Message, Room
         room = Room.objects.get(name=self.room_name)
         if oldest_message_timestamp:
             messages = Message.objects.filter(room=room, timestamp__lt=oldest_message_timestamp).order_by('-timestamp')[:20]

@@ -1,15 +1,19 @@
 services:
   - type: web
-    name: django-soft-dash
+    name: webbanhang
     plan: starter
     env: python
     region: frankfurt  # region should be same as your database region.
     buildCommand: "./build.sh"
     startCommand: "gunicorn core.wsgi:application"
     envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: core.settings
       - key: DEBUG
         value: False
       - key: SECRET_KEY
         generateValue: true
+      - key: ALLOWED_HOSTS
+        value: webbanhang.onrender.com
       - key: WEB_CONCURRENCY
         value: 4

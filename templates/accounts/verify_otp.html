@@ -125,31 +125,6 @@
             {% endif %}
         });
     </script>
-    {% comment %} <script>
-        // static/js/loading.js
-        document.addEventListener("DOMContentLoaded", function () {
-            const loadingElement = document.querySelector(".loading-container");
 
-            function showLoading() {
-                loadingElement.style.display = "block";
-            }
-
-            function hideLoading() {
-                loadingElement.style.display = "none";
-            }
-
-            // Hiển thị loading khi gửi form
-            const forms = document.querySelectorAll("form");
-            forms.forEach(form => {
-                form.addEventListener("submit", function () {
-                    showLoading();
-                });
-            });
-
-            // Ẩn loading sau khi tải trang xong
-            hideLoading();
-        });
-
-    </script> {% endcomment %}
 </body>
 </html>

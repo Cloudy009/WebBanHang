@@ -14,7 +14,6 @@ import os, random, string
 from pathlib import Path
 from dotenv import load_dotenv
 from str2bool import str2bool
-
 load_dotenv()  # take environment variables from .env.
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -42,47 +41,56 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+
+
 if RENDER_EXTERNAL_HOSTNAME:    
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
     CSRF_TRUSTED_ORIGINS.append('https://' + RENDER_EXTERNAL_HOSTNAME)
     CORS_ALLOWED_ORIGINS.append('https://' + RENDER_EXTERNAL_HOSTNAME)
+
+
 # Application definition
 SITE_ID = 2
 
 INSTALLED_APPS = [
-    'axes',
-    "daphne",
-    'admin_soft.apps.AdminSoftDashboardConfig',
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
-    'django.contrib.humanize',
+    # Middleware cần thiết nên đứng đầu để hoạt động chính xác
     'corsheaders',
 
-    "home",
-    "webhook",
-    "accounts",
+    # Django core apps
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'django.contrib.humanize',
+    'django.contrib.sites',
 
-    "django.contrib.sites",
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
-    "allauth.socialaccount.providers.google",
+    # Thứ 3 party apps liên quan
+    'axes',
+    'daphne',
+    'rest_framework',
+    'channels',
+
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 
     'django_otp',
     'django_otp.plugins.otp_static',
     'django_otp.plugins.otp_totp',
     'two_factor',
 
-    "social_django",
+    'social_django',
 
-    "rest_framework",
-    "API",
-    "channels",
-    "chatApp",
+    # Ứng dụng của bạn
+    'admin_soft.apps.AdminSoftDashboardConfig',
+    'home',
+    'webhook',
+    'accounts',
+    'API',
+    'chatApp',
 ]
 
 SOCIALACCOUNT_PROVIDERS = {
@@ -223,7 +231,6 @@ USE_L10N = True
 
 # Định dạng múi giờ
 USE_TZ = True
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 

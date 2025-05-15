@@ -27,3 +27,4 @@ pytz
 unidecode
 phonenumbers
 str2bool
+uvicorn
