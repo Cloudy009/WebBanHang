@@ -248,6 +248,7 @@ AUTHENTICATION_BACKENDS = (
     'social_core.backends.github.GithubOAuth2',
     "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend", 
+    'axes.backends.AxesStandaloneBackend',
 )
 
 # Google OAuth
@@ -283,7 +284,6 @@ AXES_FAILURE_LIMIT = 3  # Số lần đăng nhập thất bại tối đa
 AXES_COOLOFF_TIME = 1  # Thời gian khóa tài khoản (tính bằng giờ)
 AXES_LOCK_OUT_AT_FAILURE = True  # Khóa tài khoản ngay khi đạt giới hạn
 AXES_RESET_ON_SUCCESS = True  # Đặt lại số lần thất bại khi đăng nhập thành công
-AXES_ONLY_USER_FAILURES = True  # Chỉ theo dõi thất bại của người dùng đã tồn tại
 AXES_USERNAME_FORM_FIELD = 'username'  # Tên trường người dùng trong form
 
 

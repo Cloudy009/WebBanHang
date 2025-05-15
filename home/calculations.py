@@ -202,76 +202,77 @@ def calculate_month_revenue():
     return total_revenue_month
 
 def calculate_day_revenue():
-    # Lấy ngày hôm nay (dạng date)
-    today = datetime.today().date()
+    # # Lấy ngày hôm nay (dạng date)
+    # today = datetime.today().date()
 
-    # Lấy thời gian bắt đầu của ngày hôm nay (00:00:00)
-    start_of_day = datetime.combine(today, datetime.min.time())
+    # # Lấy thời gian bắt đầu của ngày hôm nay (00:00:00)
+    # start_of_day = datetime.combine(today, datetime.min.time())
 
-    # Lấy thời gian kết thúc của ngày hôm nay (23:59:59.999999)
-    end_of_day = datetime.combine(today, datetime.max.time())
+    # # Lấy thời gian kết thúc của ngày hôm nay (23:59:59.999999)
+    # end_of_day = datetime.combine(today, datetime.max.time())
 
-    # Lọc các hóa đơn được tạo trong ngày hôm nay
-    hoa_dons_today = HoaDon.objects.filter(
-        created_at__gte=start_of_day, 
-        created_at__lt=end_of_day
-    )
+    # # Lọc các hóa đơn được tạo trong ngày hôm nay
+    # hoa_dons_today = HoaDon.objects.filter(
+    #     created_at__gte=start_of_day, 
+    #     created_at__lt=end_of_day
+    # )
 
-    # Tính tổng doanh thu trong ngày hôm nay
-    total_revenue_today = hoa_dons_today.aggregate(total_revenue=Sum('tongTien'))['total_revenue'] or 0
-
+    # # Tính tổng doanh thu trong ngày hôm nay
+    # total_revenue_today = hoa_dons_today.aggregate(total_revenue=Sum('tongTien'))['total_revenue'] or 0
+    total_revenue_today = 0
     return total_revenue_today
 
 def calculate_daily_products_sold():
-    # Lấy thời gian hiện tại
-    now = datetime.now()
+    # # Lấy thời gian hiện tại
+    # now = datetime.now()
 
-    # Lấy ngày hôm nay bắt đầu từ 00:00:00
-    start_of_day = now.replace(hour=0, minute=0, second=0, microsecond=0)
+    # # Lấy ngày hôm nay bắt đầu từ 00:00:00
+    # start_of_day = now.replace(hour=0, minute=0, second=0, microsecond=0)
 
-    # Lọc chi tiết sản phẩm đã bán trong ngày hôm nay
-    total_products_sold_today = Detail.objects.filter(
-        hoaDon__created_at__gte=start_of_day
-    ).aggregate(total_sold=Sum('quantity'))['total_sold'] or 0
-
+    # # Lọc chi tiết sản phẩm đã bán trong ngày hôm nay
+    # total_products_sold_today = Detail.objects.filter(
+    #     hoaDon__created_at__gte=start_of_day
+    # ).aggregate(total_sold=Sum('quantity'))['total_sold'] or 0
+    total_products_sold_today = 0
     return total_products_sold_today
 
 def calculate_monthly_products_sold():
-     # Lấy thời gian hiện tại
-    now = datetime.now()
+    #  # Lấy thời gian hiện tại
+    # now = datetime.now()
 
-    # Tính ngày đầu tháng và cuối tháng
-    first_day_of_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-    last_day_of_month = (first_day_of_month.replace(month=now.month + 1 if now.month < 12 else 1, year=now.year + 1 if now.month == 12 else now.year) - timedelta(days=1)).replace(hour=23, minute=59, second=59, microsecond=999999)
+    # # Tính ngày đầu tháng và cuối tháng
+    # first_day_of_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    # last_day_of_month = (first_day_of_month.replace(month=now.month + 1 if now.month < 12 else 1, year=now.year + 1 if now.month == 12 else now.year) - timedelta(days=1)).replace(hour=23, minute=59, second=59, microsecond=999999)
 
-    # Lọc chi tiết sản phẩm đã bán trong tháng này
-    total_products_sold = Detail.objects.filter(
-        hoaDon__created_at__gte=first_day_of_month,
-        hoaDon__created_at__lt=last_day_of_month
-    ).aggregate(total_sold=Sum('quantity'))['total_sold'] or 0
-
+    # # Lọc chi tiết sản phẩm đã bán trong tháng này
+    # total_products_sold = Detail.objects.filter(
+    #     hoaDon__created_at__gte=first_day_of_month,
+    #     hoaDon__created_at__lt=last_day_of_month
+    # ).aggregate(total_sold=Sum('quantity'))['total_sold'] or 0
+    total_products_sold = 0
     return total_products_sold
 
 def count_registered_users_today():
-    now = datetime.now()
+    # now = datetime.now()
 
-    # Lấy thời gian bắt đầu của ngày hôm nay (00:00:00)
-    start_of_day = now.replace(hour=0, minute=0, second=0, microsecond=0)
+    # # Lấy thời gian bắt đầu của ngày hôm nay (00:00:00)
+    # start_of_day = now.replace(hour=0, minute=0, second=0, microsecond=0)
 
-    # Lọc người dùng đăng ký trong ngày hôm nay
-    total_users_today = CustomUser.objects.filter(date_joined__gte=start_of_day).count()
+    # # Lọc người dùng đăng ký trong ngày hôm nay
+    # total_users_today = CustomUser.objects.filter(date_joined__gte=start_of_day).count()
 
+    total_users_today = 0
     return total_users_today
 
 def calculate_users_registered_this_month():
-    now = datetime.now()
+    # now = datetime.now()
     
-    # Lấy ngày đầu tháng (ngày 1 của tháng hiện tại)
-    start_of_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    # # Lấy ngày đầu tháng (ngày 1 của tháng hiện tại)
+    # start_of_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
 
-    # Lọc người dùng đăng ký từ ngày đầu tháng đến nay
-    total_users_this_month = CustomUser.objects.filter(date_joined__gte=start_of_month).count()
-
+    # # Lọc người dùng đăng ký từ ngày đầu tháng đến nay
+    # total_users_this_month = CustomUser.objects.filter(date_joined__gte=start_of_month).count()
+    total_users_this_month = 0
     return total_users_this_month
 
 import plotly.express as px
@@ -279,24 +280,24 @@ import pandas as pd
 from django.db.models.functions import ExtractMonth
 
 def get_monthly_revenue(year):
-    # Lấy tất cả hóa đơn trong năm
-    start_of_year = datetime(year, 1, 1)
-    end_of_year = datetime(year, 12, 31, 23, 59, 59)
+    # # Lấy tất cả hóa đơn trong năm
+    # start_of_year = datetime(year, 1, 1)
+    # end_of_year = datetime(year, 12, 31, 23, 59, 59)
     
-    # Lọc các hóa đơn trong năm
-    invoices = HoaDon.objects.filter(created_at__gte=start_of_year, created_at__lte=end_of_year)
+    # # Lọc các hóa đơn trong năm
+    # invoices = HoaDon.objects.filter(created_at__gte=start_of_year, created_at__lte=end_of_year)
 
-    # Khởi tạo mảng doanh thu theo từng tháng (mặc định là 0)
-    revenue = [0] * 12
+    # # Khởi tạo mảng doanh thu theo từng tháng (mặc định là 0)
+    # revenue = [0] * 12
 
-    # Duyệt qua từng hóa đơn và tính doanh thu cho từng tháng
-    for invoice in invoices:
-        # Lấy tháng của hóa đơn
-        month = invoice.created_at.month
+    # # Duyệt qua từng hóa đơn và tính doanh thu cho từng tháng
+    # for invoice in invoices:
+    #     # Lấy tháng của hóa đơn
+    #     month = invoice.created_at.month
         
-        # Thêm doanh thu vào tháng tương ứng
-        revenue[month - 1] += invoice.tongTien  # tháng 1 -> index 0, tháng 2 -> index 1, ...
-
+    #     # Thêm doanh thu vào tháng tương ứng
+    #     revenue[month - 1] += invoice.tongTien  # tháng 1 -> index 0, tháng 2 -> index 1, ...
+    revenue = [0] * 12
     return revenue
 
 
