@@ -28,7 +28,7 @@ if not SECRET_KEY:
     SECRET_KEY = ''.join(random.choice( string.ascii_lowercase  ) for i in range( 32 ))
 
 # Render Deployment Code
-DEBUG = True
+DEBUG = False
 
 # HOSTs List
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'b250-171-253-138-54.ngrok-free.app', 'example.com', 'web-banhang-ujgw.onrender.com']
