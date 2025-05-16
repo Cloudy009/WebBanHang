@@ -3,7 +3,7 @@ django==4.2
 python-dotenv
 djangorestframework
 # UI 
-django-admin-soft-dashboard
+django-admin-soft-dashboard==1.0.12
 # Deployment
 whitenoise
 gunicorn

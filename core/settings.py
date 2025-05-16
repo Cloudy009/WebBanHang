@@ -54,6 +54,8 @@ SITE_ID = 2
 
 INSTALLED_APPS = [
     # Middleware cần thiết nên đứng đầu để hoạt động chính xác
+    'admin_soft.apps.AdminSoftDashboardConfig',
+
     'corsheaders',
 
     # Django core apps
@@ -87,7 +89,6 @@ INSTALLED_APPS = [
     'social_django',
 
     # Ứng dụng của bạn
-    'admin_soft.apps.AdminSoftDashboardConfig',
     'home',
     'webhook',
     'accounts',
